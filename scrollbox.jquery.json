@@ -1,0 +1,24 @@
+{
+    "name": "scrollbox",
+    "title": "jQuery Scrollbox",
+    "description": "jQuery scrollbar plugin, that trigger event when reach the defined point",
+    "keywords": [
+        "scroll",
+        "scrollbar",
+        "ui",
+        "trigger"
+    ],
+    "version": "0.1.0",
+    "author": {
+        "name": "Invis1ble"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://opensource.org/licenses/MIT"
+        }
+    ],
+    "dependencies": {
+        "jquery": ">=1.7.2"
+    }
+}
