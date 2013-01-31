@@ -1,14 +1,14 @@
 {
     "name": "scrollbox",
     "title": "jQuery Scrollbox",
-    "description": "jQuery scrollbar plugin, that trigger event when reach the defined point",
+    "description": "A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point",
     "keywords": [
         "scroll",
         "scrollbar",
         "ui",
         "trigger"
     ],
-    "version": "0.1.0",
+    "version": "0.1.1",
     "author": {
         "name": "Invis1ble"
     },
