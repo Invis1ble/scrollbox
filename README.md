@@ -1,6 +1,6 @@
 # Scrollbox
 
-A lightweight jQuery plugin, that allows to scroll any div and triggers event when scrolling to defined point.
+A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.
 
 ## Usage
 
