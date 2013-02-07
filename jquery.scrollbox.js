@@ -1,7 +1,7 @@
 /**
  * jquery.scrollbox.js
  * 
- * @version    0.1.1
+ * @version    0.1.2
  * @author     Invis1ble
  * @copyright  (c) 2013 Invis1ble <invisiblexman2010@gmail.com>
  * @license    MIT http://www.opensource.org/licenses/mit-license.php
@@ -76,8 +76,8 @@
         
         removeListeners: function () {
             this.$wrapper.off({
-                mouseenter: $.proxy(this._enter, this),
-                mouseleave: $.proxy(this._leave, this)
+                mouseenter: this._enter,
+                mouseleave: this._leave
             });
             
             if (w.removeEventListener) {
@@ -87,11 +87,11 @@
             else
                 d.detachEvent('onmousewheel', this._listeners.wheel);
             
-            this.$bar.off('mousedown', $.proxy(this._capture, this));
+            this.$bar.off('mousedown', this._capture);
             
             $(d).off({
-                mouseup: $.proxy(this._release, this),
-                mousemove: $.proxy(this._move, this)
+                mouseup: this._release,
+                mousemove: this._move
             });
         },
         
