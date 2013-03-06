@@ -1,7 +1,7 @@
 /**
  * jquery.scrollbox.js
  * 
- * @version    0.2.0
+ * @version    0.2.1
  * @author     Invis1ble
  * @copyright  (c) 2013 Invis1ble <invisiblexman2010@gmail.com>
  * @license    MIT http://www.opensource.org/licenses/mit-license.php
@@ -50,9 +50,8 @@
                 .append(this.$rail)
                 .append(this.$bar);
             
-            options.start != 'top' && this.jump(options.start);
-            
             this._updateBarHeight();
+            options.start != 'top' && this.jump(options.start);
             this._isShown && this.addListeners();
         },
         
