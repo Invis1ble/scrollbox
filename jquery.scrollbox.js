@@ -1,7 +1,7 @@
 /**
  * jquery.scrollbox.js
  * 
- * @version    0.1.2
+ * @version    0.2.0
  * @author     Invis1ble
  * @copyright  (c) 2013 Invis1ble <invisiblexman2010@gmail.com>
  * @license    MIT http://www.opensource.org/licenses/mit-license.php
@@ -26,8 +26,9 @@
             this.update = o.update || this.update;
             this.destroy = o.destroy || this.destroy;
 
-            this._isReachTriggered = this._isOver = this._isCaptured = this._isShown = false;
+            this._isOver = this._isCaptured = this._isShown = false;
             this._prevY = this._scrolledTo = 0;
+            this._isReachTriggered = {top: false, bottom: false};
             this._scrollHeight = undef;
             
             this._listeners = {};
@@ -40,12 +41,16 @@
         constructor: Scrollbox,
         
         init: function () {
+            var options = this.options;
+            
             this.$wrapper = this.$element
                 .trigger('init.' + name)
                 .css('overflow', 'hidden')
-                .wrap(this.options.templates.wrapper).parent()
+                .wrap(options.templates.wrapper).parent()
                 .append(this.$rail)
                 .append(this.$bar);
+            
+            options.start != 'top' && this.jump(options.start);
             
             this._updateBarHeight();
             this._isShown && this.addListeners();
@@ -160,7 +165,9 @@
         
         scroll: function (delta) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
-                scrollTo = this._scrolledTo + delta;
+                scrollTo = this._scrolledTo + delta,
+                options = this.options,
+                position;
             
             this.$element.trigger('scroll.' + name);
             
@@ -174,13 +181,25 @@
             this.$element.scrollTop(this._scrolledTo);
             this._updateBarPosition();
             
-            if (!this._isReachTriggered && this._scrolledTo + this.options.buffer >= max) {
-                this.$element.trigger('reach.' + name);
-                this._isReachTriggered = true;
+            if (!this._isReachTriggered.bottom && this._scrolledTo + options.buffer >= max) {
+                position = 'bottom';
+            }
+            else if (!this._isReachTriggered.top && this._scrolledTo - options.buffer <= 0) {
+                position = 'top';
+            }
+            
+            if (position) {
+                this.$element.trigger($.Event('reach.' + name, {position: position}));
+                this._isReachTriggered[position] = true;
             }
         },
         
         jump: function (y) {
+            if (y === 'top')
+                y = 0;
+            else if (y === 'bottom')
+                y = this._getScrollHeight() - this.$element.height();
+            
             this.scroll(y - this._scrolledTo);
         },
         
@@ -188,7 +207,7 @@
             var isShown = this._isShown;
             
             this._scrollHeight = undef;
-            this._isReachTriggered = false;
+            this._isReachTriggered.top = this._isReachTriggered.bottom = false;
             this._updateBarHeight();
             
             if (this._isShown) {
@@ -270,6 +289,7 @@
     $.fn[name].defaults = {
         buffer: 0,
         sensitivity: 20,
+        start: 'top',
         templates: {
             bar: '<div class="' + name + '-bar"></div>',
             rail: '<div class="' + name + '-rail"></div>',
