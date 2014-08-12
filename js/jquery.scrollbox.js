@@ -30,6 +30,7 @@
             this._prevY = this._scrolledTo = 0;
             this._isReachTriggered = {top: false, bottom: false};
             this._scrollHeight = undefined;
+            this._scrolledBySelf = false;
             
             this._listeners = {};
 
@@ -81,6 +82,8 @@
                 mouseup: $.proxy(this._onRelease, this),
                 mousemove: $.proxy(this._onMove, this)
             });
+            
+            this.$element.on('scroll', $.proxy(this._onScroll, this));
         },
         
         removeListeners: function () {
@@ -103,6 +106,8 @@
                 mouseup: this._onRelease,
                 mousemove: this._onMove
             });
+            
+            this.$element.off('scroll', this._onScroll);
         },
         
         _onEnter: function (e) {
@@ -176,6 +181,13 @@
             this._isCaptured = false;
         },
         
+        _onScroll: function () {
+            if (!this._scrolledBySelf) {
+                this._scrolledTo = this.$element.scrollTop();
+                this.update();
+            }
+        },
+        
         scroll: function (delta) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
                 scrollTo = this._scrolledTo + delta,
@@ -194,7 +206,10 @@
                 this._scrolledTo = scrollTo;
             }
             
+            this._scrolledBySelf = true;
             this.$element.scrollTop(this._scrolledTo);
+            this._scrolledBySelf = false;
+            
             this._updateBarPosition();
             
             if (!this._isReachTriggered.bottom && this._scrolledTo + options.buffer >= max) {
