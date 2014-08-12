@@ -6,7 +6,7 @@
  * @copyright  (c) 2013-2014, Max Invis1ble
  * @license    MIT http://www.opensource.org/licenses/mit-license.php
  */
-!function ($, w, d, undef) {
++function ($, window, document, undefined) {
 
     'use strict';
     
@@ -29,7 +29,7 @@
             this._isOver = this._isCaptured = this._isShown = false;
             this._prevY = this._scrolledTo = 0;
             this._isReachTriggered = {top: false, bottom: false};
-            this._scrollHeight = undef;
+            this._scrollHeight = undefined;
             
             this._listeners = {};
 
@@ -37,8 +37,6 @@
         };
     
     Scrollbox.prototype = {
-        
-        constructor: Scrollbox,
         
         init: function () {
             var options = this.options;
@@ -51,8 +49,14 @@
                 .append(this.$bar);
             
             this._updateBarHeight();
-            options.start != 'top' && this.jump(options.start);
-            this._isShown && this.addListeners();
+            
+            if ('top' !== options.start) {
+                this.jump(options.start);
+            }
+            
+            if (this._isShown) {
+                this.addListeners();
+            }
         },
         
         addListeners: function () {
@@ -63,16 +67,17 @@
                 mouseleave: $.proxy(this._leave, this)
             });
             
-            if (w.addEventListener) {
-                w.addEventListener('DOMMouseScroll', this._listeners.wheel, false);
-                w.addEventListener('mousewheel', this._listeners.wheel, false);
+            if (window.addEventListener) {
+                window.addEventListener('DOMMouseScroll', this._listeners.wheel, false);
+                window.addEventListener('mousewheel', this._listeners.wheel, false);
             }
-            else
-                d.attachEvent('onmousewheel', this._listeners.wheel);
+            else {
+                document.attachEvent('onmousewheel', this._listeners.wheel);
+            }
             
             this.$bar.on('mousedown', $.proxy(this._capture, this));
             
-            $(d).on({
+            $(document).on({
                 mouseup: $.proxy(this._release, this),
                 mousemove: $.proxy(this._move, this)
             });
@@ -84,16 +89,17 @@
                 mouseleave: this._leave
             });
             
-            if (w.removeEventListener) {
-                w.removeEventListener('DOMMouseScroll', this._listeners.wheel, false);
-                w.removeEventListener('mousewheel', this._listeners.wheel, false);
+            if (window.removeEventListener) {
+                window.removeEventListener('DOMMouseScroll', this._listeners.wheel, false);
+                window.removeEventListener('mousewheel', this._listeners.wheel, false);
             }
-            else
-                d.detachEvent('onmousewheel', this._listeners.wheel);
+            else {
+                document.detachEvent('onmousewheel', this._listeners.wheel);
+            }
             
             this.$bar.off('mousedown', this._capture);
             
-            $(d).off({
+            $(document).off({
                 mouseup: this._release,
                 mousemove: this._move
             });
@@ -122,24 +128,29 @@
         },
         
         _wheel: function (e) {
-            if (!this._isOver) return;
-            var e = e || w.event,
+            if (!this._isOver) {
+                return;
+            }
+            
+            var e = e || window.event,
                 event = $.Event('wheel.' + name);
             
             this.$element.trigger(event);
             
             if (!event.isDefaultPrevented()) {
-                if (e.preventDefault)
+                if (e.preventDefault) {
                     e.preventDefault();
-                else
+                }
+                else {
                     e.returnValue = false;
+                }
 
                 this.scroll((e.detail ? e.detail / 3 : - e.wheelDelta / 120) * this.options.sensitivity);
             }
         },
         
         _capture: function (e) {
-            if (e.which == 1) {
+            if (1 === e.which) {
                 e.preventDefault();
                 this.$element.trigger('dragstart.' + name);
                 this._isCaptured = true;
@@ -156,7 +167,10 @@
         },
         
         _release: function (e) {
-            if (!this._isCaptured || e.which != 1) return;
+            if (!this._isCaptured || 1 !== e.which) {
+                return;
+            }
+            
             this.$element.trigger('dragstop.' + name);
             e.preventDefault();
             this._isCaptured = false;
@@ -170,12 +184,15 @@
             
             this.$element.trigger('scroll.' + name);
             
-            if (scrollTo >= max)
+            if (scrollTo >= max) {
                 this._scrolledTo = max;
-            else if (scrollTo <= 0)
+            }
+            else if (scrollTo <= 0) {
                 this._scrolledTo = 0;
-            else
+            }
+            else {
                 this._scrolledTo = scrollTo;
+            }
             
             this.$element.scrollTop(this._scrolledTo);
             this._updateBarPosition();
@@ -194,10 +211,12 @@
         },
         
         jump: function (y) {
-            if (y === 'top')
+            if ('top' === y) {
                 y = 0;
-            else if (y === 'bottom')
+            }
+            else if ('bottom' === y) {
                 y = this._getScrollHeight() - this.$element.height();
+            }
             
             this.scroll(y - this._scrolledTo);
         },
@@ -205,13 +224,16 @@
         update: function () {
             var isShown = this._isShown;
             
-            this._scrollHeight = undef;
+            this._scrollHeight = undefined;
             this._isReachTriggered.top = this._isReachTriggered.bottom = false;
             this._updateBarHeight();
             
             if (this._isShown) {
                 this._updateBarPosition();
-                isShown || this.addListeners();
+                
+                if (!isShown) {
+                    this.addListeners();
+                }
             }
         },
         
@@ -221,8 +243,9 @@
         
         _getScrollHeight: function () {
             // opera bug workaround
-            if (this._scrollHeight === undef)
+            if (undefined === this._scrollHeight) {
                 this._scrollHeight = this.$element[0].scrollHeight;
+            }
             
             return this._scrollHeight;
         },
@@ -230,7 +253,7 @@
         _updateBarHeight: function () {
             var ratio = this._getRatio();
             
-            if (ratio != 1) {
+            if (1 !== ratio) {
                 this.$bar.height(this.$element.outerHeight() * ratio);
                 
                 if (!this._isShown) {
@@ -273,17 +296,27 @@
     
     $.fn[name] = function (option) {
         var args = Array.prototype.slice.call(arguments, 1);
+        
         return this.each(function () {
             var $this = $(this),
                 data = $this.data(name),
-                options = typeof option == 'object' && option;
+                options;
             
-            if (!data) $this.data(name, (data = new Scrollbox($this, options)));
-            typeof option == 'string' && data[option].apply(data, args);
+            if ('object' === typeof option) {
+                options = option;
+            }
+            
+            if (!data) {
+                $this.data(name, (data = new Scrollbox($this, options)));
+            }
+            
+            if (typeof 'string' === option) {
+                data[option].apply(data, args);
+            }
         });
     };
     
-    $.fn[name].constructor = Scrollbox;
+    $.fn[name].Constructor = Scrollbox;
     
     $.fn[name].defaults = {
         buffer: 0,
