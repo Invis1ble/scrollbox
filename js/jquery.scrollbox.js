@@ -60,11 +60,11 @@
         },
         
         addListeners: function () {
-            this._listeners.wheel = $.proxy(this._wheel, this);
+            this._listeners.wheel = $.proxy(this._onWheel, this);
             
             this.$wrapper.on({
-                mouseenter: $.proxy(this._enter, this),
-                mouseleave: $.proxy(this._leave, this)
+                mouseenter: $.proxy(this._onEnter, this),
+                mouseleave: $.proxy(this._onLeave, this)
             });
             
             if (window.addEventListener) {
@@ -75,18 +75,18 @@
                 document.attachEvent('onmousewheel', this._listeners.wheel);
             }
             
-            this.$bar.on('mousedown', $.proxy(this._capture, this));
+            this.$bar.on('mousedown', $.proxy(this._onCapture, this));
             
             $(document).on({
-                mouseup: $.proxy(this._release, this),
-                mousemove: $.proxy(this._move, this)
+                mouseup: $.proxy(this._onRelease, this),
+                mousemove: $.proxy(this._onMove, this)
             });
         },
         
         removeListeners: function () {
             this.$wrapper.off({
-                mouseenter: this._enter,
-                mouseleave: this._leave
+                mouseenter: this._onEnter,
+                mouseleave: this._onLeave
             });
             
             if (window.removeEventListener) {
@@ -97,15 +97,15 @@
                 document.detachEvent('onmousewheel', this._listeners.wheel);
             }
             
-            this.$bar.off('mousedown', this._capture);
+            this.$bar.off('mousedown', this._onCapture);
             
             $(document).off({
-                mouseup: this._release,
-                mousemove: this._move
+                mouseup: this._onRelease,
+                mousemove: this._onMove
             });
         },
         
-        _enter: function (e) {
+        _onEnter: function (e) {
             var event = $.Event('enter.' + name);
             
             this.$element.trigger(event);
@@ -116,7 +116,7 @@
             }
         },
         
-        _leave: function (e) {
+        _onLeave: function (e) {
             var event = $.Event('leave.' + name);
             
             this.$element.trigger(event);
@@ -127,7 +127,7 @@
             }
         },
         
-        _wheel: function (e) {
+        _onWheel: function (e) {
             if (!this._isOver) {
                 return;
             }
@@ -149,7 +149,7 @@
             }
         },
         
-        _capture: function (e) {
+        _onCapture: function (e) {
             if (1 === e.which) {
                 e.preventDefault();
                 this.$element.trigger('dragstart.' + name);
@@ -158,7 +158,7 @@
             }
         },
         
-        _move: function (e) {
+        _onMove: function (e) {
             if (!this._isCaptured) return;
             this.$element.trigger('drag.' + name);
             e.preventDefault();
@@ -166,7 +166,7 @@
             this._prevY = e.pageY;
         },
         
-        _release: function (e) {
+        _onRelease: function (e) {
             if (!this._isCaptured || 1 !== e.which) {
                 return;
             }
