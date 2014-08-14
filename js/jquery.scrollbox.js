@@ -325,7 +325,7 @@
                 $this.data(name, (data = new Scrollbox($this, options)));
             }
             
-            if (typeof 'string' === option) {
+            if ('string' === typeof option) {
                 data[option].apply(data, args);
             }
         });
