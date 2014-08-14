@@ -1,7 +1,7 @@
 {
     "name": "invis1ble/scrollbox",
     "description": "A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "type": "component",
     "keywords": [
         "jquery",
