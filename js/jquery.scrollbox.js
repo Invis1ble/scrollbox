@@ -471,7 +471,7 @@
         buffer: 0,
         wheelSensitivity: 20,
         swipeAcceleration: 1600,
-        momentumThresholdTime: 300,
+        momentumThresholdTime: 500,
         start: 'top',
         templates: {
             bar: '<div class="' + name + '-bar"></div>',
