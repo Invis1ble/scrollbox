@@ -1,9 +1,9 @@
 /**
  * jquery.scrollbox.css
  * 
- * @version    0.3.1
+ * @version    1.0.0-alpha
  * @author     Max Invis1ble
- * @copyright  (c) 2013-2014, Max Invis1ble
+ * @copyright  (c) 2013-2016, Max Invis1ble
  * @license    MIT http://www.opensource.org/licenses/mit-license.php
  */
 .scrollbox-wrapper {
@@ -17,7 +17,7 @@
     top: 0;
     right: 0;
     z-index: 10;
-    width: 8px;
+    width: 45px;
     -webkit-border-radius: 8px;
     -khtml-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -34,7 +34,7 @@
     filter: alpha(opacity=20);
 }
 .scrollbox-bar {
-    min-height: 30px;
+    min-height: 45px;
     opacity: .4;
     filter: alpha(opacity=40);
 }

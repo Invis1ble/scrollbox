@@ -1,0 +1,13 @@
+.scrollbox-wrapper {
+    padding-right: 60px;
+    margin: 50px auto 50px;
+    width: 250px;
+}
+#container {
+    max-height: 130px;
+}
+@media (min-height: 340px) {
+    #container {
+        max-height: 240px;
+    }
+}

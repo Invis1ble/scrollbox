@@ -1,15 +1,15 @@
 /**
  * jquery.scrollbox.js
- * 
- * @version    0.3.1
+ *
+ * @version    1.0.0-alpha
  * @author     Max Invis1ble
- * @copyright  (c) 2013-2014, Max Invis1ble
+ * @copyright  (c) 2013-2016, Max Invis1ble
  * @license    MIT http://www.opensource.org/licenses/mit-license.php
  */
 +function ($, window, document, undefined) {
 
     'use strict';
-    
+
     var name = 'scrollbox',
         Scrollbox = function ($element, options) {
             var o = this.options = $.extend({}, $.fn[name].defaults, options);
@@ -26,313 +26,398 @@
             this.update = o.update || this.update;
             this.destroy = o.destroy || this.destroy;
 
-            this._isOver = this._isCaptured = this._isShown = false;
+            this._isOver = this._isBarCaptured = this._isShown = this._scrolledBySelf = false;
             this._prevY = this._scrolledTo = 0;
             this._isReachTriggered = {top: false, bottom: false};
             this._scrollHeight = undefined;
-            this._scrolledBySelf = false;
-            
+            this._barTouchId = this._elementTouchId = null;
+
             this._listeners = {};
 
             this.init();
         };
-    
+
     Scrollbox.prototype = {
-        
+
         init: function () {
             var options = this.options;
-            
+
             this.$wrapper = this.$element
                 .trigger('init.' + name)
                 .css('overflow', 'hidden')
                 .wrap(options.templates.wrapper).parent()
                 .append(this.$rail)
                 .append(this.$bar);
-            
+
             this._updateBarHeight();
-            
+
             if ('top' !== options.start) {
                 this.jump(options.start);
             }
-            
+
             if (this._isShown) {
                 this.addListeners();
             }
         },
-        
+
         addListeners: function () {
             this._listeners.wheel = $.proxy(this._onWheel, this);
-            
+
             this.$wrapper.on({
                 mouseenter: $.proxy(this._onEnter, this),
                 mouseleave: $.proxy(this._onLeave, this)
             });
-            
+
             if (window.addEventListener) {
                 window.addEventListener('DOMMouseScroll', this._listeners.wheel, false);
                 window.addEventListener('mousewheel', this._listeners.wheel, false);
-            }
-            else {
+            } else {
                 document.attachEvent('onmousewheel', this._listeners.wheel);
             }
-            
-            this.$bar.on('mousedown', $.proxy(this._onCapture, this));
-            
-            $(document).on({
-                mouseup: $.proxy(this._onRelease, this),
-                mousemove: $.proxy(this._onMove, this)
+
+            this.$bar.on({
+                mousedown: $.proxy(this._onBarMouseDown, this),
+                touchstart: $.proxy(this._onBarTouchStart, this)
             });
-            
-            this.$element.on('scroll', $.proxy(this._onScroll, this));
+
+            this.$element.on({
+                scroll: $.proxy(this._onElementScroll, this),
+                touchstart: $.proxy(this._onElementTouchStart, this)
+            });
+
+            $(document).on({
+                mouseup: $.proxy(this._onDocumentMouseUp, this),
+                mousemove: $.proxy(this._onDocumentMouseMove, this),
+                touchend: $.proxy(this._onDocumentTouchEnd, this),
+                touchmove: $.proxy(this._onDocumentTouchMove, this)
+            });
         },
-        
+
         removeListeners: function () {
             this.$wrapper.off({
                 mouseenter: this._onEnter,
                 mouseleave: this._onLeave
             });
-            
+
             if (window.removeEventListener) {
                 window.removeEventListener('DOMMouseScroll', this._listeners.wheel, false);
                 window.removeEventListener('mousewheel', this._listeners.wheel, false);
-            }
-            else {
+            } else {
                 document.detachEvent('onmousewheel', this._listeners.wheel);
             }
-            
-            this.$bar.off('mousedown', this._onCapture);
-            
-            $(document).off({
-                mouseup: this._onRelease,
-                mousemove: this._onMove
+
+            this.$bar.off({
+                mousedown: this._onBarMouseDown,
+                touchstart: this._onBarTouchStart
             });
-            
-            this.$element.off('scroll', this._onScroll);
+
+            this.$element.off({
+                scroll: this._onElementScroll,
+                touchstart: this._onElementTouchStart
+            });
+
+            $(document).off({
+                mouseup: this._onDocumentMouseUp,
+                mousemove: this._onDocumentMouseMove,
+                touchend: this._onDocumentTouchEnd,
+                touchmove: this._onDocumentTouchMove
+            });
         },
-        
+
         _onEnter: function (e) {
             var event = $.Event('enter.' + name);
-            
+
             this.$element.trigger(event);
-            
+
             if (!event.isDefaultPrevented()) {
                 e.preventDefault();
                 this._isOver = true;
             }
         },
-        
+
         _onLeave: function (e) {
             var event = $.Event('leave.' + name);
-            
+
             this.$element.trigger(event);
-            
+
             if (!event.isDefaultPrevented()) {
                 e.preventDefault();
                 this._isOver = false;
             }
         },
-        
+
         _onWheel: function (e) {
-            if (!this._isOver) {
-                return;
-            }
-            
-            var e = e || window.event,
-                event = $.Event('wheel.' + name);
-            
-            this.$element.trigger(event);
-            
-            if (!event.isDefaultPrevented()) {
+            if (this._isOver) {
+                if (undefined === e) {
+                    e = window.event;
+                }
+
                 if (e.preventDefault) {
                     e.preventDefault();
-                }
-                else {
+                } else {
                     e.returnValue = false;
                 }
 
-                this.scroll((e.detail ? e.detail / 3 : - e.wheelDelta / 120) * this.options.sensitivity);
+                this.scroll((e.detail ? e.detail / 3 : -e.wheelDelta / 120) * this.options.sensitivity);
             }
         },
-        
-        _onCapture: function (e) {
+
+        _onBarMouseDown: function (e) {
             if (1 === e.which) {
                 e.preventDefault();
-                this.$element.trigger('dragstart.' + name);
-                this._isCaptured = true;
-                this._prevY = e.pageY;
+                this._dragStart(e.pageY);
             }
         },
-        
-        _onMove: function (e) {
-            if (!this._isCaptured) return;
-            this.$element.trigger('drag.' + name);
-            e.preventDefault();
-            this.scroll((e.pageY - this._prevY) / this._getRatio());
-            this._prevY = e.pageY;
-        },
-        
-        _onRelease: function (e) {
-            if (!this._isCaptured || 1 !== e.which) {
-                return;
+
+        _onDocumentMouseMove: function (e) {
+            if (this._isBarCaptured) {
+                e.preventDefault();
+                this._drag(e.pageY);
             }
-            
-            this.$element.trigger('dragstop.' + name);
-            e.preventDefault();
-            this._isCaptured = false;
         },
-        
-        _onScroll: function () {
+
+        _onDocumentMouseUp: function (e) {
+            if (this._isBarCaptured && 1 === e.which) {
+                e.preventDefault();
+                this._dragStop();
+            }
+        },
+
+        _onBarTouchStart: function (e) {
+            var touches = e.originalEvent.targetTouches;
+
+            if (1 == touches.length) {
+                e.preventDefault();
+                this._barTouchId = touches[0].identifier;
+                this._dragStart(touches[0].pageY);
+            }
+        },
+
+        _onDocumentTouchMove: function (e) {
+            var touches = e.originalEvent.targetTouches,
+                i;
+
+            if (this._isBarCaptured) {
+                for (i in touches) {
+                    if (touches[i].identifier === this._barTouchId) {
+                        e.preventDefault();
+                        this._drag(touches[i].pageY);
+                        break;
+                    }
+                }
+            }
+
+            if (null !== this._elementTouchId) {
+                for (i in touches) {
+                    if (touches[i].identifier === this._elementTouchId) {
+                        e.preventDefault();
+                        this._swipe(touches[i].pageY);
+                        break;
+                    }
+                }
+            }
+        },
+
+        _onDocumentTouchEnd: function (e) {
+            var touches = e.originalEvent.changedTouches,
+                i;
+
+            if (this._isBarCaptured) {
+                for (i in touches) {
+                    if (touches[i].identifier === this._barTouchId) {
+                        e.preventDefault();
+                        this._dragStop();
+                        this._barTouchId = null;
+                        break;
+                    }
+                }
+            }
+
+            if (null !== this._elementTouchId) {
+                for (i in touches) {
+                    if (touches[i].identifier === this._barTouchId) {
+                        e.preventDefault();
+                        this._elementTouchId = null;
+                        break;
+                    }
+                }
+            }
+        },
+
+        _onElementScroll: function () {
             if (!this._scrolledBySelf) {
                 this._scrolledTo = this.$element.scrollTop();
                 this.update();
             }
         },
-        
+
+        _onElementTouchStart: function (e) {
+            if (1 == e.originalEvent.targetTouches.length) {
+                e.preventDefault();
+                this._elementTouchId = e.originalEvent.targetTouches[0].identifier;
+                this._prevY = e.originalEvent.targetTouches[0].pageY;
+            }
+        },
+
+        _dragStart: function (y) {
+            this._isBarCaptured = true;
+            this._prevY = y;
+        },
+
+        _drag: function (y) {
+            this.scroll((y - this._prevY) / this._getRatio());
+            this._prevY = y;
+        },
+
+        _dragStop: function () {
+            this._isBarCaptured = false;
+        },
+
+        _swipe: function (y) {
+            this.scroll((this._prevY - y) / this._getRatio());
+            this._prevY = y;
+        },
+
         scroll: function (delta) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
                 scrollTo = this._scrolledTo + delta,
                 options = this.options,
                 position;
-            
+
             this.$element.trigger('scroll.' + name);
-            
+
             if (scrollTo >= max) {
                 this._scrolledTo = max;
-            }
-            else if (scrollTo <= 0) {
+            } else if (scrollTo <= 0) {
                 this._scrolledTo = 0;
-            }
-            else {
+            } else {
                 this._scrolledTo = scrollTo;
             }
-            
+
             this._scrolledBySelf = true;
             this.$element.scrollTop(this._scrolledTo);
             this._scrolledBySelf = false;
-            
+
             this._updateBarPosition();
-            
+
             if (!this._isReachTriggered.bottom && this._scrolledTo + options.buffer >= max) {
                 position = 'bottom';
-            }
-            else if (!this._isReachTriggered.top && this._scrolledTo - options.buffer <= 0) {
+            } else if (!this._isReachTriggered.top && this._scrolledTo - options.buffer <= 0) {
                 position = 'top';
             }
-            
+
             if (position) {
                 this.$element.trigger($.Event('reach.' + name, {position: position}));
                 this._isReachTriggered[position] = true;
             }
         },
-        
+
         jump: function (y) {
             if ('top' === y) {
                 y = 0;
-            }
-            else if ('bottom' === y) {
+            } else if ('bottom' === y) {
                 y = this._getScrollHeight() - this.$element.height();
             }
-            
+
             this.scroll(y - this._scrolledTo);
         },
-        
+
         update: function () {
             var isShown = this._isShown;
-            
+
             this._scrollHeight = undefined;
             this._isReachTriggered.top = this._isReachTriggered.bottom = false;
             this._updateBarHeight();
-            
+
             if (this._isShown) {
                 this._updateBarPosition();
-                
+
                 if (!isShown) {
                     this.addListeners();
                 }
             }
         },
-        
+
         _getRatio: function () {
             return this.$element.outerHeight() / this._getScrollHeight();
         },
-        
+
         _getScrollHeight: function () {
             // opera bug workaround
             if (undefined === this._scrollHeight) {
                 this._scrollHeight = this.$element[0].scrollHeight;
             }
-            
+
             return this._scrollHeight;
         },
-        
+
         _updateBarHeight: function () {
             var ratio = this._getRatio();
-            
+
             if (1 !== ratio) {
                 this.$bar.height(this.$element.outerHeight() * ratio);
-                
+
                 if (!this._isShown) {
                     this.$bar.addClass(name + '-bar-in');
                     this.$rail.addClass(name + '-rail-in');
                     this._isShown = true;
                 }
-            }
-            else if (this._isShown) {
+            } else if (this._isShown) {
                 this.removeListeners();
                 this.$bar.removeClass(name + '-bar-in');
                 this.$rail.removeClass(name + '-rail-in');
                 this._isShown = false;
             }
         },
-        
+
         _updateBarPosition: function () {
             var h = this.$element.outerHeight();
             this.$bar.css('top', (h - this.$bar.outerHeight()) * (this._scrolledTo / (this._getScrollHeight() - h)));
         },
-        
+
         destroy: function () {
             this.$wrapper
                 .off('.' + name)
                 .find('*').off('.' + name);
-            
+
             this.removeListeners();
-            
+
             this.$element
                 .unwrap()
                 .removeData(name);
-            
+
             this.$rail.remove();
             this.$bar.remove();
-            
+
             this.$bar = this.$rail = this.$element = this.$wrapper = null;
         }
-        
+
     };
-    
+
     $.fn[name] = function (option) {
         var args = Array.prototype.slice.call(arguments, 1);
-        
+
         return this.each(function () {
             var $this = $(this),
                 data = $this.data(name),
                 options;
-            
+
             if ('object' === typeof option) {
                 options = option;
             }
-            
+
             if (!data) {
                 $this.data(name, (data = new Scrollbox($this, options)));
             }
-            
+
             if ('string' === typeof option) {
                 data[option].apply(data, args);
             }
         });
     };
-    
+
     $.fn[name].Constructor = Scrollbox;
-    
+
     $.fn[name].defaults = {
         buffer: 0,
         sensitivity: 20,
@@ -343,5 +428,5 @@
             wrapper: '<div class="' + name + '-wrapper"></div>'
         }
     };
-    
+
 }(jQuery, window, document);
