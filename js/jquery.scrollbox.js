@@ -220,7 +220,9 @@
 
         _onDocumentTouchEnd: function (e) {
             var touches = e.originalEvent.changedTouches,
-                distance,
+                swipeDuration,
+                swipeDistance,
+                swipeSpeed,
                 offset,
                 i;
 
@@ -239,15 +241,29 @@
                 for (i in touches) {
                     if (touches[i].identifier === this._elementTouchId) {
                         e.preventDefault();
-                        
-                        distance = this._swipeStartY - touches[i].pageY;
-                        offset = Math.pow(distance / (this._swipeStartedAt - Date.now()) * 100, 2);
-                        
-                        if (distance < 0) {
-                            offset = -offset;
-                        }
 
-                        this.scroll(offset, { duration: 500, easing: 'linear' });
+                        swipeDuration = Date.now() - this._swipeStartedAt;
+
+                        console.log('swipeDuration: ' + swipeDuration);
+
+                        if (swipeDuration <= this.options.momentumThresholdTime) {
+                            swipeDistance = this._swipeStartY - touches[i].pageY;
+                            swipeSpeed = Math.abs(swipeDistance / swipeDuration);
+                            offset = swipeSpeed * swipeSpeed * 2 * this.options.swipeAcceleration;
+
+                            console.log('offset: ' + offset);
+
+                            if (swipeDistance < 0) {
+                                offset = -offset;
+                            }
+
+                            console.log('animationDuration: ' + (swipeSpeed * this.options.swipeAcceleration));
+
+                            this.scroll(offset, {
+                                duration: swipeSpeed * this.options.swipeAcceleration,
+                                easing: 'momentum'
+                            });
+                        }
 
                         this._swipeStartY = this._swipeStartedAt = this._elementTouchId = null;
                         break;
@@ -421,6 +437,15 @@
 
     };
 
+    if ($.easing.momentum === undefined) {
+        $.easing.momentum = function (x, t, b, c, d) {
+            var ts = (t /= d) * t,
+                tc = ts * t;
+
+            return b + c * (-1 * ts * ts + 4 * tc + -6 * ts + 4 * t);
+        };
+    }
+
     $.fn[name] = function (option) {
         var args = Array.prototype.slice.call(arguments, 1);
 
@@ -448,6 +473,8 @@
     $.fn[name].defaults = {
         buffer: 0,
         wheelSensitivity: 20,
+        swipeAcceleration: 1600,
+        momentumThresholdTime: 300,
         start: 'top',
         templates: {
             bar: '<div class="' + name + '-bar"></div>',

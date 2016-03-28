@@ -1,5 +1,7 @@
 $(function () {
-    var $container = $('#container');
+    var $container = $('#container'),
+        content,
+        i;
 
     $(window).on('resize orientationchange', function () {
         if ($container.data('scrollbox') !== undefined) {
@@ -7,23 +9,15 @@ $(function () {
         }
     });
 
-    $.ajax({
-        type: 'GET',
-        url: 'https://en.wikipedia.org/w/api.php?callback=?',
-        data: {
-            page: 'JavaScript',
-            action: 'mobileview',
-            format: 'json',
-            prop: 'text',
-            sections: 'all'
-        },
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json'
-    }).done(function (data) {
-        $.each(data.mobileview.sections, function (i, section) {
-            $container.append(section.text);
-        });
+    content = '<ul>';
 
-        $container.scrollbox();
-    });
+    for (i = 1; i <= 500; ++ i) {
+        content += '<li>Line ' + i + '</li>';
+    }
+
+    content += '</ul>';
+
+    $container.append(content);
+
+    $container.scrollbox();
 });
