@@ -244,20 +244,14 @@
 
                         swipeDuration = Date.now() - this._swipeStartedAt;
 
-                        console.log('swipeDuration: ' + swipeDuration);
-
                         if (swipeDuration <= this.options.momentumThresholdTime) {
                             swipeDistance = this._swipeStartY - touches[i].pageY;
                             swipeSpeed = Math.abs(swipeDistance / swipeDuration);
                             offset = swipeSpeed * swipeSpeed * 2 * this.options.swipeAcceleration;
 
-                            console.log('offset: ' + offset);
-
                             if (swipeDistance < 0) {
                                 offset = -offset;
                             }
-
-                            console.log('animationDuration: ' + (swipeSpeed * this.options.swipeAcceleration));
 
                             this.scroll(offset, {
                                 duration: swipeSpeed * this.options.swipeAcceleration,
@@ -284,6 +278,9 @@
 
             if (1 == touches.length) {
                 e.preventDefault();
+
+                this.$element.stop(true, false);
+
                 this._elementTouchId = touches[0].identifier;
                 this._swipeStartY = this._prevY = touches[0].pageY;
                 this._swipeStartedAt = new Date();
