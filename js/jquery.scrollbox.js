@@ -220,6 +220,8 @@
 
         _onDocumentTouchEnd: function (e) {
             var touches = e.originalEvent.changedTouches,
+                distance,
+                offset,
                 i;
 
             if (this._isBarCaptured) {
@@ -237,13 +239,15 @@
                 for (i in touches) {
                     if (touches[i].identifier === this._elementTouchId) {
                         e.preventDefault();
+                        
+                        distance = this._swipeStartY - touches[i].pageY;
+                        offset = Math.pow(distance / (this._swipeStartedAt - Date.now()) * 100, 2);
+                        
+                        if (distance < 0) {
+                            offset = -offset;
+                        }
 
-                        this.scroll(
-                            Math.pow((this._swipeStartY - touches[i].pageY) / (this._swipeStartedAt - Date.now()) * 100, 2), {
-                                duration: 500,
-                                easing: 'linear'
-                            }
-                        );
+                        this.scroll(offset, { duration: 500, easing: 'linear' });
 
                         this._swipeStartY = this._swipeStartedAt = this._elementTouchId = null;
                         break;
