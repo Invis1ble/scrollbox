@@ -30,7 +30,7 @@
             this._prevY = this._scrolledTo = 0;
             this._isReachTriggered = {top: false, bottom: false};
             this._scrollHeight = undefined;
-            this._barTouchId = this._elementTouchId = null;
+            this._barTouchId = this._elementTouchId = this._swipeStartY = this._swipeStartedAt = null;
 
             this._listeners = {};
 
@@ -158,7 +158,7 @@
                     e.returnValue = false;
                 }
 
-                this.scroll((e.detail ? e.detail / 3 : -e.wheelDelta / 120) * this.options.sensitivity);
+                this.scroll((e.detail ? e.detail / 3 : -e.wheelDelta / 120) * this.options.wheelSensitivity);
             }
         },
 
@@ -235,9 +235,17 @@
 
             if (null !== this._elementTouchId) {
                 for (i in touches) {
-                    if (touches[i].identifier === this._barTouchId) {
+                    if (touches[i].identifier === this._elementTouchId) {
                         e.preventDefault();
-                        this._elementTouchId = null;
+
+                        this.scroll(
+                            Math.pow((this._swipeStartY - touches[i].pageY) / (this._swipeStartedAt - Date.now()) * 100, 2), {
+                                duration: 500,
+                                easing: 'linear'
+                            }
+                        );
+
+                        this._swipeStartY = this._swipeStartedAt = this._elementTouchId = null;
                         break;
                     }
                 }
@@ -252,10 +260,13 @@
         },
 
         _onElementTouchStart: function (e) {
-            if (1 == e.originalEvent.targetTouches.length) {
+            var touches = e.originalEvent.targetTouches;
+
+            if (1 == touches.length) {
                 e.preventDefault();
-                this._elementTouchId = e.originalEvent.targetTouches[0].identifier;
-                this._prevY = e.originalEvent.targetTouches[0].pageY;
+                this._elementTouchId = touches[0].identifier;
+                this._swipeStartY = this._prevY = touches[0].pageY;
+                this._swipeStartedAt = new Date();
             }
         },
 
@@ -274,11 +285,11 @@
         },
 
         _swipe: function (y) {
-            this.scroll((this._prevY - y) / this._getRatio());
+            this.scroll(this._prevY - y);
             this._prevY = y;
         },
 
-        scroll: function (delta) {
+        scroll: function (delta, animationOptions) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
                 scrollTo = this._scrolledTo + delta,
                 options = this.options,
@@ -295,7 +306,15 @@
             }
 
             this._scrolledBySelf = true;
-            this.$element.scrollTop(this._scrolledTo);
+
+            if (undefined === animationOptions) {
+                this.$element.scrollTop(this._scrolledTo);
+            } else {
+                this.$element.stop(true, false).animate({
+                    scrollTop: this._scrolledTo
+                }, animationOptions);
+            }
+
             this._scrolledBySelf = false;
 
             this._updateBarPosition();
@@ -371,8 +390,12 @@
         },
 
         _updateBarPosition: function () {
-            var h = this.$element.outerHeight();
-            this.$bar.css('top', (h - this.$bar.outerHeight()) * (this._scrolledTo / (this._getScrollHeight() - h)));
+            var elementHeight = this.$element.outerHeight();
+
+            this.$bar.css(
+                'top',
+                (elementHeight - this.$bar.outerHeight()) * (this._scrolledTo / (this._getScrollHeight() - elementHeight))
+            );
         },
 
         destroy: function () {
@@ -420,7 +443,7 @@
 
     $.fn[name].defaults = {
         buffer: 0,
-        sensitivity: 20,
+        wheelSensitivity: 20,
         start: 'top',
         templates: {
             bar: '<div class="' + name + '-bar"></div>',
