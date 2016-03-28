@@ -10,6 +10,9 @@
     position: relative;
     overflow: hidden;
 }
+.scrollbox-wrapper > :first-child {
+    will-change: scroll-position;
+}
 .scrollbox-rail,
 .scrollbox-bar {
     display: none;
@@ -37,4 +40,5 @@
     min-height: 45px;
     opacity: .4;
     filter: alpha(opacity=40);
+    will-change: top;
 }
