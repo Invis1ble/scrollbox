@@ -26,10 +26,11 @@
             this.update = o.update || this.update;
             this.destroy = o.destroy || this.destroy;
 
-            this._isOver = this._isBarCaptured = this._isShown = this._scrolledBySelf = false;
-            this._prevY = this._scrolledTo = 0;
-            this._isReachTriggered = {top: false, bottom: false};
+            this._isOver = this._isBarCaptured = this._isShown = false;
+            this._prevY = 0;
+            this._isReachTriggered = { top: false, bottom: false };
             this._scrollHeight = undefined;
+            this._setScrolledToY();
             this._barTouchId = this._elementTouchId = this._swipeStartY = this._swipeStartedAt = null;
 
             this._listeners = {};
@@ -125,25 +126,15 @@
         },
 
         _onEnter: function (e) {
-            var event = $.Event('enter.' + name);
+            e.preventDefault();
 
-            this.$element.trigger(event);
-
-            if (!event.isDefaultPrevented()) {
-                e.preventDefault();
-                this._isOver = true;
-            }
+            this._isOver = true;
         },
 
         _onLeave: function (e) {
-            var event = $.Event('leave.' + name);
+            e.preventDefault();
 
-            this.$element.trigger(event);
-
-            if (!event.isDefaultPrevented()) {
-                e.preventDefault();
-                this._isOver = false;
-            }
+            this._isOver = false;
         },
 
         _onWheel: function (e) {
@@ -165,6 +156,7 @@
         _onBarMouseDown: function (e) {
             if (1 === e.which) {
                 e.preventDefault();
+
                 this._dragStart(e.pageY);
             }
         },
@@ -172,6 +164,7 @@
         _onDocumentMouseMove: function (e) {
             if (this._isBarCaptured) {
                 e.preventDefault();
+
                 this._drag(e.pageY);
             }
         },
@@ -179,6 +172,7 @@
         _onDocumentMouseUp: function (e) {
             if (this._isBarCaptured && 1 === e.which) {
                 e.preventDefault();
+
                 this._dragStop();
             }
         },
@@ -188,6 +182,7 @@
 
             if (1 == touches.length) {
                 e.preventDefault();
+
                 this._barTouchId = touches[0].identifier;
                 this._dragStart(touches[0].pageY);
             }
@@ -201,6 +196,7 @@
                 for (i in touches) {
                     if (touches[i].identifier === this._barTouchId) {
                         e.preventDefault();
+
                         this._drag(touches[i].pageY);
                         break;
                     }
@@ -211,6 +207,7 @@
                 for (i in touches) {
                     if (touches[i].identifier === this._elementTouchId) {
                         e.preventDefault();
+
                         this._swipe(touches[i].pageY);
                         break;
                     }
@@ -230,6 +227,7 @@
                 for (i in touches) {
                     if (touches[i].identifier === this._barTouchId) {
                         e.preventDefault();
+
                         this._dragStop();
                         this._barTouchId = null;
                         break;
@@ -244,17 +242,17 @@
 
                         swipeDuration = Date.now() - this._swipeStartedAt;
 
-                        if (swipeDuration <= this.options.momentumThresholdTime) {
+                        if (swipeDuration <= this.options.momentum.thresholdTime) {
                             swipeDistance = this._swipeStartY - touches[i].pageY;
                             swipeSpeed = Math.abs(swipeDistance / swipeDuration);
-                            offset = swipeSpeed * swipeSpeed * 2 * this.options.swipeAcceleration;
+                            offset = swipeSpeed * swipeSpeed * 2 * this.options.momentum.acceleration;
 
                             if (swipeDistance < 0) {
                                 offset = -offset;
                             }
 
                             this.scroll(offset, {
-                                duration: swipeSpeed * this.options.swipeAcceleration,
+                                duration: swipeSpeed * this.options.momentum.acceleration,
                                 easing: 'momentum'
                             });
                         }
@@ -266,11 +264,10 @@
             }
         },
 
-        _onElementScroll: function () {
-            if (!this._scrolledBySelf) {
-                this._scrolledTo = this.$element.scrollTop();
-                this.update();
-            }
+        _onElementScroll: function (e) {
+            e.preventDefault();
+
+            this._updateBarPosition();
         },
 
         _onElementTouchStart: function (e) {
@@ -290,15 +287,21 @@
         _dragStart: function (y) {
             this._isBarCaptured = true;
             this._prevY = y;
+
+            this.$bar.addClass(name + '-bar-captured');
         },
 
         _drag: function (y) {
-            this.scroll((y - this._prevY) / this._getRatio());
+            var elementHeight = this.$element.outerHeight();
+
+            this.scroll((y - this._prevY) * ((this._getScrollHeight() - elementHeight) / (elementHeight - this.$bar.height())));
             this._prevY = y;
         },
 
         _dragStop: function () {
             this._isBarCaptured = false;
+
+            this.$bar.removeClass(name + '-bar-captured');
         },
 
         _swipe: function (y) {
@@ -308,54 +311,48 @@
 
         scroll: function (delta, animationOptions) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
-                scrollTo = this._scrolledTo + delta,
+                scrollToY = this._getScrolledToY() + delta,
                 options = this.options,
                 position;
 
             this.$element.trigger('scroll.' + name);
 
-            if (scrollTo >= max) {
-                this._scrolledTo = max;
-            } else if (scrollTo <= 0) {
-                this._scrolledTo = 0;
-            } else {
-                this._scrolledTo = scrollTo;
+            if (scrollToY >= max) {
+                scrollToY = max;
+            } else if (scrollToY <= 0) {
+                scrollToY = 0;
             }
 
-            this._scrolledBySelf = true;
+            this._setScrolledToY(scrollToY);
 
             if (undefined === animationOptions) {
-                this.$element.scrollTop(this._scrolledTo);
+                this.$element.scrollTop(scrollToY);
             } else {
                 this.$element.stop(true, false).animate({
-                    scrollTop: this._scrolledTo
+                    scrollTop: scrollToY
                 }, animationOptions);
             }
 
-            this._scrolledBySelf = false;
-
-            this._updateBarPosition();
-
-            if (!this._isReachTriggered.bottom && this._scrolledTo + options.buffer >= max) {
+            if (!this._isReachTriggered.bottom && scrollToY + options.distanceToReach >= max) {
                 position = 'bottom';
-            } else if (!this._isReachTriggered.top && this._scrolledTo - options.buffer <= 0) {
+            } else if (!this._isReachTriggered.top && scrollToY - options.distanceToReach <= 0) {
                 position = 'top';
             }
 
             if (position) {
-                this.$element.trigger($.Event('reach.' + name, {position: position}));
+                this.$element.trigger($.Event('reach.' + name, { position: position }));
                 this._isReachTriggered[position] = true;
             }
         },
 
-        jump: function (y) {
+        jump: function (y, animationOptions) {
             if ('top' === y) {
                 y = 0;
             } else if ('bottom' === y) {
                 y = this._getScrollHeight() - this.$element.height();
             }
 
-            this.scroll(y - this._scrolledTo);
+            this.scroll(y - this._getScrolledToY(), animationOptions);
         },
 
         update: function () {
@@ -374,8 +371,16 @@
             }
         },
 
-        _getRatio: function () {
-            return this.$element.outerHeight() / this._getScrollHeight();
+        _getScrolledToY: function () {
+            if (undefined === this._scrolledToY) {
+                this._scrolledToY = this.$element.scrollTop();
+            }
+
+            return this._scrolledToY;
+        },
+
+        _setScrolledToY: function (y) {
+            this._scrolledToY = y;
         },
 
         _getScrollHeight: function () {
@@ -388,10 +393,11 @@
         },
 
         _updateBarHeight: function () {
-            var ratio = this._getRatio();
+            var elementHeight = this.$element.outerHeight(),
+                ratio = elementHeight / this._getScrollHeight();
 
             if (1 !== ratio) {
-                this.$bar.height(this.$element.outerHeight() * ratio);
+                this.$bar.height(elementHeight * ratio);
 
                 if (!this._isShown) {
                     this.$bar.addClass(name + '-bar-in');
@@ -411,7 +417,7 @@
 
             this.$bar.css(
                 'top',
-                (elementHeight - this.$bar.outerHeight()) * (this._scrolledTo / (this._getScrollHeight() - elementHeight))
+                (elementHeight - this.$bar.outerHeight()) * (this._getScrolledToY() / (this._getScrollHeight() - elementHeight))
             );
         },
 
@@ -468,10 +474,12 @@
     $.fn[name].Constructor = Scrollbox;
 
     $.fn[name].defaults = {
-        buffer: 0,
+        distanceToReach: 0,
         wheelSensitivity: 20,
-        swipeAcceleration: 1600,
-        momentumThresholdTime: 500,
+        momentum: {
+            acceleration: 1600,
+            thresholdTime: 500
+        },
         start: 'top',
         templates: {
             bar: '<div class="' + name + '-bar"></div>',
