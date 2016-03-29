@@ -33,12 +33,20 @@
 }
 .scrollbox-rail {
     height: 100%;
-    opacity: .2;
-    filter: alpha(opacity=20);
+    opacity: .07;
+    filter: alpha(opacity=7);
 }
 .scrollbox-bar {
     min-height: 45px;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    will-change: top;
+}
+.scrollbox-bar:hover {
+    opacity: .3;
+    filter: alpha(opacity=30);
+}
+.scrollbox-bar.scrollbox-bar-captured {
     opacity: .4;
     filter: alpha(opacity=40);
-    will-change: top;
 }
