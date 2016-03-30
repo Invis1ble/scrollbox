@@ -208,8 +208,6 @@
                     if (touches[i].identifier === this._elementTouchId) {
                         e.preventDefault();
 
-                        this.foo = touches[i].pageY;
-
                         this._swipe(touches[i].pageY);
                         break;
                     }
