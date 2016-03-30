@@ -1,10 +1,10 @@
 # Scrollbox
 
 A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.
+[Demo Page](https://invis1ble.github.io/scrollbox/)
 
 ## Usage
 
-See [index.html](https://github.com/Invis1ble/scrollbox/blob/master/index.html) for the basic usage.
 (will be documented later)
 
 ## API documentation
