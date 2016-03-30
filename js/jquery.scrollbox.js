@@ -208,6 +208,8 @@
                     if (touches[i].identifier === this._elementTouchId) {
                         e.preventDefault();
 
+                        this.foo = touches[i].pageY;
+
                         this._swipe(touches[i].pageY);
                         break;
                     }
@@ -276,7 +278,10 @@
             if (1 == touches.length) {
                 e.preventDefault();
 
-                this.$element.stop(true, false);
+                if (this.$element.is(':animated')) {
+                    this.$element.stop(true, false);
+                    this._setScrolledToY(this.$element.scrollTop());
+                }
 
                 this._elementTouchId = touches[0].identifier;
                 this._swipeStartY = this._prevY = touches[0].pageY;
@@ -315,7 +320,9 @@
                 options = this.options,
                 position;
 
-            this.$element.trigger('scroll.' + name);
+            this.$element
+                .trigger('scroll.' + name)
+                .stop(true, false);
 
             if (scrollToY >= max) {
                 scrollToY = max;
@@ -328,7 +335,7 @@
             if (undefined === animationOptions) {
                 this.$element.scrollTop(scrollToY);
             } else {
-                this.$element.stop(true, false).animate({
+                this.$element.animate({
                     scrollTop: scrollToY
                 }, animationOptions);
             }
@@ -417,7 +424,7 @@
 
             this.$bar.css(
                 'top',
-                (elementHeight - this.$bar.outerHeight()) * (this._getScrolledToY() / (this._getScrollHeight() - elementHeight))
+                (elementHeight - this.$bar.outerHeight()) * (this.$element.scrollTop() / (this._getScrollHeight() - elementHeight))
             );
         },
 
