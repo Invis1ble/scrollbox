@@ -1,0 +1,28 @@
+{
+    "name": "scrollbox",
+    "homepage": "https://github.com/Invis1ble/scrollbox",
+    "authors": [
+        "Invis1ble"
+    ],
+    "description": "A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.",
+    "main": [
+        "js/jquery.scrollbox.js",
+        "css/jquery.scrollbox.css"
+    ],
+    "moduleType": "globals",
+    "keywords": [
+        "jquery",
+        "scroll",
+        "scrollbar",
+        "ui",
+        "trigger",
+        "touchscreen"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "node_modules"
+    ],
+    "dependencies": {
+        "jquery": "1.7.2 - 2"
+    }
+}
