@@ -1,7 +1,7 @@
 /**
  * jquery.scrollbox.js
  *
- * @version    1.0.0-alpha
+ * @version    1.0.0
  * @author     Max Invis1ble
  * @copyright  (c) 2013-2016, Max Invis1ble
  * @license    MIT http://www.opensource.org/licenses/mit-license.php
