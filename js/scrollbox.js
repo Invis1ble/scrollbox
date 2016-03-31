@@ -1,156 +1,120 @@
-/**
- * jquery.scrollbox.js
- *
- * @version    1.0.0-alpha
- * @author     Max Invis1ble
- * @copyright  (c) 2013-2016, Max Invis1ble
- * @license    MIT http://www.opensource.org/licenses/mit-license.php
+/*!
+ * Scrollbox v.2.0.0
+ * (c) 2013-2016, Max Invis1ble
+ * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
+
 +function ($, window, document, undefined) {
 
     'use strict';
 
     var name = 'scrollbox',
         Scrollbox = function ($element, options) {
-            var o = this.options = $.extend({}, $.fn[name].defaults, options);
+            (function (that, options, methods, i) {
+                that.options = options;
 
-            this.$element = $element;
-            this.$rail = $(o.templates.rail);
-            this.$bar = $(o.templates.bar);
+                that.$element = $element;
+                that.$rail = $(options.templates.rail);
+                that.$bar = $(options.templates.bar);
 
-            this.init = o.init || this.init;
-            this.addListeners = o.addListeners || this.addListeners;
-            this.removeListeners = o.removeListeners || this.removeListeners;
-            this.scroll = o.scroll || this.scroll;
-            this.jump = o.jump || this.jump;
-            this.update = o.update || this.update;
-            this.destroy = o.destroy || this.destroy;
+                for (i in methods) {
+                    if (options[methods[i]]) {
+                        that[methods[i]] = options[methods[i]];
+                    }
+                }
 
-            this._isOver = this._isBarCaptured = this._isShown = false;
-            this._prevY = 0;
-            this._isReachTriggered = { top: false, bottom: false };
-            this._scrollHeight = undefined;
-            this._setScrolledToY();
-            this._barTouchId = this._elementTouchId = this._swipeStartY = this._swipeStartedAt = null;
+                that._isBarCaptured = that._isShown = false;
+                that._prevY = 0;
+                that._isReachTriggered = { top: false, bottom: false };
+                that._scrollHeight = undefined;
+                that._setScrolledToY();
+                that._barTouchId = that._elementTouchId = that._swipeStartY = that._swipeStartedAt = null;
 
-            this._listeners = {};
-
-            this.init();
+                that.init();
+            })(this, $.extend({}, $.fn[name].defaults, options), [
+                'init',
+                'addListeners',
+                'removeListeners',
+                'scroll',
+                'jump',
+                'update',
+                'destroy'
+            ]);
         };
 
     Scrollbox.prototype = {
 
         init: function () {
-            var options = this.options;
+            (function (that, options) {
+                that.$wrapper = that.$element
+                    .trigger('init.' + name)
+                    .css('overflow', 'hidden')
+                    .wrap(options.templates.wrapper).parent()
+                    .append(that.$rail)
+                    .append(that.$bar);
 
-            this.$wrapper = this.$element
-                .trigger('init.' + name)
-                .css('overflow', 'hidden')
-                .wrap(options.templates.wrapper).parent()
-                .append(this.$rail)
-                .append(this.$bar);
+                that._updateBarHeight();
 
-            this._updateBarHeight();
+                if ('top' !== options.start) {
+                    that.jump(options.start);
+                }
 
-            if ('top' !== options.start) {
-                this.jump(options.start);
-            }
-
-            if (this._isShown) {
-                this.addListeners();
-            }
+                if (that._isShown) {
+                    that.addListeners();
+                }
+            })(this, this.options);
         },
 
         addListeners: function () {
-            this._listeners.wheel = $.proxy(this._onWheel, this);
+            (function (that, proxy) {
+                that.$wrapper.on('mousewheel', proxy(that, '_onWheel'));
 
-            this.$wrapper.on({
-                mouseenter: $.proxy(this._onEnter, this),
-                mouseleave: $.proxy(this._onLeave, this)
-            });
+                that.$bar.on({
+                    mousedown: proxy(that, '_onBarMouseDown'),
+                    touchstart: proxy(that, '_onBarTouchStart')
+                });
 
-            if (window.addEventListener) {
-                window.addEventListener('DOMMouseScroll', this._listeners.wheel, false);
-                window.addEventListener('mousewheel', this._listeners.wheel, false);
-            } else {
-                document.attachEvent('onmousewheel', this._listeners.wheel);
-            }
+                that.$element.on({
+                    scroll: proxy(that, '_onElementScroll'),
+                    touchstart: proxy(that, '_onElementTouchStart')
+                });
 
-            this.$bar.on({
-                mousedown: $.proxy(this._onBarMouseDown, this),
-                touchstart: $.proxy(this._onBarTouchStart, this)
-            });
-
-            this.$element.on({
-                scroll: $.proxy(this._onElementScroll, this),
-                touchstart: $.proxy(this._onElementTouchStart, this)
-            });
-
-            $(document).on({
-                mouseup: $.proxy(this._onDocumentMouseUp, this),
-                mousemove: $.proxy(this._onDocumentMouseMove, this),
-                touchend: $.proxy(this._onDocumentTouchEnd, this),
-                touchmove: $.proxy(this._onDocumentTouchMove, this)
-            });
+                $(document).on({
+                    mouseup: proxy(that, '_onDocumentMouseUp'),
+                    mousemove: proxy(that, '_onDocumentMouseMove'),
+                    touchend: proxy(that, '_onDocumentTouchEnd'),
+                    touchmove: proxy(that, '_onDocumentTouchMove')
+                });
+            })(this, $.proxy);
         },
 
         removeListeners: function () {
-            this.$wrapper.off({
-                mouseenter: this._onEnter,
-                mouseleave: this._onLeave
-            });
+            (function (that) {
+                that.$wrapper.off('mousewheel', that._onWheel);
 
-            if (window.removeEventListener) {
-                window.removeEventListener('DOMMouseScroll', this._listeners.wheel, false);
-                window.removeEventListener('mousewheel', this._listeners.wheel, false);
-            } else {
-                document.detachEvent('onmousewheel', this._listeners.wheel);
-            }
+                that.$bar.off({
+                    mousedown: that._onBarMouseDown,
+                    touchstart: that._onBarTouchStart
+                });
 
-            this.$bar.off({
-                mousedown: this._onBarMouseDown,
-                touchstart: this._onBarTouchStart
-            });
+                that.$element.off({
+                    scroll: that._onElementScroll,
+                    touchstart: that._onElementTouchStart
+                });
 
-            this.$element.off({
-                scroll: this._onElementScroll,
-                touchstart: this._onElementTouchStart
-            });
-
-            $(document).off({
-                mouseup: this._onDocumentMouseUp,
-                mousemove: this._onDocumentMouseMove,
-                touchend: this._onDocumentTouchEnd,
-                touchmove: this._onDocumentTouchMove
-            });
-        },
-
-        _onEnter: function (e) {
-            e.preventDefault();
-
-            this._isOver = true;
-        },
-
-        _onLeave: function (e) {
-            e.preventDefault();
-
-            this._isOver = false;
+                $(document).off({
+                    mouseup: that._onDocumentMouseUp,
+                    mousemove: that._onDocumentMouseMove,
+                    touchend: that._onDocumentTouchEnd,
+                    touchmove: that._onDocumentTouchMove
+                });
+            })(this);
         },
 
         _onWheel: function (e) {
-            if (this._isOver) {
-                if (undefined === e) {
-                    e = window.event;
-                }
-
-                if (e.preventDefault) {
-                    e.preventDefault();
-                } else {
-                    e.returnValue = false;
-                }
-
-                this.scroll((e.detail ? e.detail / 3 : -e.wheelDelta / 120) * this.options.wheelSensitivity);
-            }
+            e.preventDefault();
+            
+            this.scroll(-e.deltaY * this.options.wheelSensitivity);
         },
 
         _onBarMouseDown: function (e) {
