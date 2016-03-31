@@ -121,8 +121,9 @@ $('#long-content-container').scrollbox('update');
 ```
 
 * `update()` already has been explained above.
-* `jump(y, [animationsOptions](https://api.jquery.com/animate/))` scroll to position.
-* `scroll(delta, [animationsOptions](https://api.jquery.com/animate/))` scroll by pixels.
+* `scroll(delta, animationsOptions))` scroll by pixels. `$('#long-content-container').scrollbox('scroll', 100)` as example.
+See [.animate()](https://api.jquery.com/animate/#animate-properties-options) for the available values of the `animationOptions`
+* `jump(y, animationsOptions)` scroll to position.
 * `destroy()` Call this method when you want to completely destroy instance of Scrollbox.
 
 ## License
