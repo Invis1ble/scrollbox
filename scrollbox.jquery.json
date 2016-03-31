@@ -21,6 +21,7 @@
     ],
     "bugs": "https://github.com/Invis1ble/scrollbox/issues",
     "dependencies": {
-        "jquery": ">=1.7.2"
+        "jquery": ">=1.7.2",
+        "jquery-mousewheel": ">=3.1.13"
     }
 }
