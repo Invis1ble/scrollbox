@@ -1,0 +1,26 @@
+.scrollbox-wrapper {
+    position: relative;
+    overflow: hidden;
+
+    > :first-child {
+        will-change: scroll-position;
+    }
+}
+.scrollbox-rail,
+.scrollbox-bar {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+}
+.scrollbox-rail-in,
+.scrollbox-bar-in {
+    display: block;
+}
+.scrollbox-rail {
+    height: 100%;
+}
+.scrollbox-bar {
+    will-change: top;
+}

@@ -1,0 +1,32 @@
+@rail-width: 7px;
+@rail-border-radius: floor(@rail-width / 2);
+@rail-background-color: #000;
+@rail-opacity: .03;
+
+@bar-min-height: 20px;
+@bar-width: @rail-width;
+@bar-border-radius: @rail-border-radius;
+@bar-background-color: #ccc;
+@bar-hovered-background-color: darken(@bar-background-color, 20%);
+@bar-captured-background-color: darken(@bar-background-color, 40%);
+
+.scrollbox-rail {
+    width: @rail-width;
+    background-color: @rail-background-color;
+    border-radius: @rail-border-radius;
+    opacity: @rail-opacity;
+}
+.scrollbox-bar {
+    min-height: @bar-min-height;
+    width: @bar-width;
+    background-color: @bar-background-color;
+    border-radius: @bar-border-radius;
+
+    &:hover {
+        background-color: @bar-hovered-background-color;
+    }
+
+    &.scrollbox-bar-captured {
+        background-color: @bar-captured-background-color;
+    }
+}

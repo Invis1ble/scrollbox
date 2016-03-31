@@ -6,8 +6,8 @@
     ],
     "description": "A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.",
     "main": [
-        "js/jquery.scrollbox.js",
-        "css/jquery.scrollbox.css"
+        "dist/js/scrollbox.js",
+        "src/less/scrollbox.less"
     ],
     "moduleType": "globals",
     "keywords": [
