@@ -50,18 +50,20 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
-                preserveComments: /^!|@preserve|@license|@cc_on/i
+                preserveComments: /^!/,
+                sourceMap: true
             },
             dist: {
                 files: {
-                    'dist/js/<%= pkg.name %>.min.js': 'src/js/scrollbox.js'
+                    'dist/js/<%= pkg.name %>.min.js': 'dist/js/<%= pkg.name %>.js'
                 }
             }
         },
         cssmin: {
             options: {
                 shorthandCompacting: false,
-                roundingPrecision: -1
+                roundingPrecision: -1,
+                sourceMap: true
             },
             dist: {
                 files: {
