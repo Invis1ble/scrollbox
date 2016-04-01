@@ -63,7 +63,8 @@ module.exports = function (grunt) {
             options: {
                 shorthandCompacting: false,
                 roundingPrecision: -1,
-                sourceMap: true
+                sourceMap: true,
+                root: 'dist/css/'
             },
             dist: {
                 files: {
