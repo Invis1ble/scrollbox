@@ -4,6 +4,17 @@ A lightweight jQuery custom scrollbar plugin, that triggers event when reached t
 
 [Demo Page](https://invis1ble.github.io/scrollbox/)
 
+## Browser compatibility
+
+* IE 7+
+* Firefox
+* Opera (old and new)
+* Safari
+* Chrome
+* Chrome for Android
+
+... and others
+
 ## Installation
 
 Several quick start options are available:
@@ -121,9 +132,9 @@ $('#long-content-container').scrollbox('update');
 ```
 
 * `update()` already has been explained above.
-* `scroll(delta, animationsOptions))` scroll by pixels. `$('#long-content-container').scrollbox('scroll', 100)` as example.
+* `scroll(delta, animationOptions))` scroll by pixels. `$('#long-content-container').scrollbox('scroll', 100)` as example.
 See [.animate()](https://api.jquery.com/animate/#animate-properties-options) for the available values of the `animationOptions`
-* `jump(y, animationsOptions)` scroll to position.
+* `jump(y, animationOptions)` scroll to position.
 * `destroy()` Call this method when you want to completely destroy instance of Scrollbox.
 
 ## License
