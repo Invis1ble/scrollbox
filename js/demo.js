@@ -12,7 +12,7 @@ $(function () {
     content = '<ul>';
 
     for (i = 1; i <= 500; ++ i) {
-        content += '<li id="line' + i + '">Line ' + i + '</li>';
+        content += '<li id="line' + i + '"><a href="#line' + i + '">Line ' + i + '</a></li>';
     }
 
     content += '</ul>';
