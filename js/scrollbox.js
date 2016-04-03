@@ -1,5 +1,5 @@
 /*!
- * Scrollbox v2.1.5
+ * Scrollbox v2.1.6
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -202,8 +202,6 @@
             if (null !== this._elementTouchId) {
                 for (i in touches) {
                     if (touches[i].identifier === this._elementTouchId) {
-                        e.preventDefault();
-
                         swipeDuration = Date.now() - this._swipeStartedAt;
 
                         if (swipeDuration <= this.options.momentum.thresholdTime) {
@@ -238,8 +236,6 @@
             var touches = e.originalEvent.targetTouches;
 
             if (1 == touches.length) {
-                e.preventDefault();
-
                 if (this.$element.is(':animated')) {
                     this.$element.stop(true, false);
                     this._setScrolledToY(this.$element.scrollTop());
