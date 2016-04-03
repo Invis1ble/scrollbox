@@ -1,6 +1,6 @@
 {
     "name": "scrollbox",
-    "version": "2.1.5",
+    "version": "2.1.6",
     "description": "A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.",
     "devDependencies": {
         "autoprefixer": "~6.3.5",
