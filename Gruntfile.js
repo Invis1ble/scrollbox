@@ -9,20 +9,12 @@ module.exports = function (grunt) {
             'dist/*'
         ],
         copy: {
+            options: {
+                nonull: true
+            },
             dist: {
-                options: {
-                    nonull: true
-                },
                 src: 'src/js/scrollbox.js',
                 dest: 'dist/js/<%= pkg.name %>.js'
-            },
-            demoCss: {
-                dest: 'dist/css/demo.css',
-                src: 'src/less/demo.css'
-            },
-            demoJs: {
-                dest: 'dist/js/demo.js',
-                src: 'src/js/demo.js'
             }
         },
         less: {
