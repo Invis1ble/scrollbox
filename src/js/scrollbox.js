@@ -27,7 +27,7 @@
                 that._prevY = 0;
                 that._isReachTriggered = { top: false, bottom: false };
                 that._scrollHeight = undefined;
-                that._setScrolledToY();
+                that._setScrolledToY($element.scrollTop());
                 that._barTouchId = that._elementTouchId = that._swipeStartY = that._swipeStartedAt = null;
 
                 that.init();
@@ -48,19 +48,19 @@
             (function (that, options) {
                 that.$wrapper = that.$element
                     .trigger('init.' + name)
-                    .css('overflow', 'hidden')
+                    .addClass('scrollbox-overflowed')
                     .wrap(options.templates.wrapper).parent()
                     .append(that.$rail)
                     .append(that.$bar);
-
+                
                 that._updateBarHeight();
-
-                if ('top' !== options.start) {
-                    that.jump(options.start);
-                }
 
                 if (that._isShown) {
                     that.addListeners();
+                }
+
+                if ('top' !== options.start) {
+                    that.jump(options.start);
                 }
             })(this, this.options);
         },
@@ -153,29 +153,28 @@
         },
 
         _onDocumentTouchMove: function (e) {
-            var touches = e.originalEvent.targetTouches,
-                i;
+            var touches = e.originalEvent.targetTouches;
 
             if (this._isBarCaptured) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._barTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._barTouchId) {
                         e.preventDefault();
 
-                        this._drag(touches[i].pageY);
-                        break;
+                        this._drag(touch.pageY);
+                        return false;
                     }
-                }
+                }, this));
             }
 
             if (null !== this._elementTouchId) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._elementTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._elementTouchId) {
                         e.preventDefault();
 
-                        this._swipe(touches[i].pageY);
-                        break;
+                        this._swipe(touch.pageY);
+                        return false;
                     }
-                }
+                }, this));
             }
         },
 
@@ -184,28 +183,27 @@
                 swipeDuration,
                 swipeDistance,
                 swipeSpeed,
-                offset,
-                i;
+                offset;
 
             if (this._isBarCaptured) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._barTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._barTouchId) {
                         e.preventDefault();
 
                         this._dragStop();
                         this._barTouchId = null;
-                        break;
+                        return false;
                     }
-                }
+                }, this));
             }
 
             if (null !== this._elementTouchId) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._elementTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._elementTouchId) {
                         swipeDuration = Date.now() - this._swipeStartedAt;
 
                         if (swipeDuration <= this.options.momentum.thresholdTime) {
-                            swipeDistance = this._swipeStartY - touches[i].pageY;
+                            swipeDistance = this._swipeStartY - touch.pageY;
                             swipeSpeed = Math.abs(swipeDistance / swipeDuration);
                             offset = swipeSpeed * swipeSpeed * 2 * this.options.momentum.acceleration;
 
@@ -220,15 +218,16 @@
                         }
 
                         this._swipeStartY = this._swipeStartedAt = this._elementTouchId = null;
-                        break;
+                        return false;
                     }
-                }
+                }, this));
             }
         },
 
         _onElementScroll: function (e) {
             e.preventDefault();
 
+            this._setScrolledToY(this.$element.scrollTop());
             this._updateBarPosition();
         },
 
@@ -238,7 +237,6 @@
             if (1 == touches.length) {
                 if (this.$element.is(':animated')) {
                     this.$element.stop(true, false);
-                    this._setScrolledToY(this.$element.scrollTop());
                 }
 
                 this._elementTouchId = touches[0].identifier;
@@ -274,33 +272,40 @@
 
         scroll: function (delta, animationOptions) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
-                scrollToY = this._getScrolledToY() + delta,
+                desiredDestination = this._getScrolledToY() + delta,
                 options = this.options,
+                destination,
                 position;
 
             this.$element
                 .trigger('scroll.' + name)
                 .stop(true, false);
 
-            if (scrollToY >= max) {
-                scrollToY = max;
-            } else if (scrollToY <= 0) {
-                scrollToY = 0;
+            if (desiredDestination >= max) {
+                destination = max;
+            } else if (desiredDestination <= 0) {
+                destination = 0;
+            } else {
+                destination = parseInt(desiredDestination, 10);
             }
-
-            this._setScrolledToY(scrollToY);
 
             if (undefined === animationOptions) {
-                this.$element.scrollTop(scrollToY);
+                this.$element.scrollTop(destination);
             } else {
                 this.$element.animate({
-                    scrollTop: scrollToY
-                }, animationOptions);
+                    scrollTop: desiredDestination
+                }, $.extend({}, animationOptions, {
+                    progress: $.proxy(function (animation) {
+                        if (this._getScrolledToY() === destination) {
+                            animation.stop();
+                        }
+                    }, this)
+                }));
             }
 
-            if (!this._isReachTriggered.bottom && scrollToY + options.distanceToReach >= max) {
+            if (!this._isReachTriggered.bottom && destination + options.distanceToReach >= max) {
                 position = 'bottom';
-            } else if (!this._isReachTriggered.top && scrollToY - options.distanceToReach <= 0) {
+            } else if (!this._isReachTriggered.top && destination - options.distanceToReach <= 0) {
                 position = 'top';
             }
 
@@ -337,10 +342,6 @@
         },
 
         _getScrolledToY: function () {
-            if (undefined === this._scrolledToY) {
-                this._scrolledToY = this.$element.scrollTop();
-            }
-
             return this._scrolledToY;
         },
 
@@ -387,13 +388,10 @@
         },
 
         destroy: function () {
-            this.$wrapper
-                .off('.' + name)
-                .find('*').off('.' + name);
-
             this.removeListeners();
 
             this.$element
+                .removeClass('scrollbox-overflowed')
                 .unwrap()
                 .removeData(name);
 
@@ -405,12 +403,10 @@
 
     };
 
-    if ($.easing.momentum === undefined) {
+    if (undefined === $.easing.momentum) {
+        // easeOutExpo
         $.easing.momentum = function (x, t, b, c, d) {
-            var ts = (t /= d) * t,
-                tc = ts * t;
-
-            return b + c * (-1 * ts * ts + 4 * tc + -6 * ts + 4 * t);
+            return t == d ? b + c : c * (- Math.pow(2, -10 * t / d) + 1) + b;
         };
     }
 

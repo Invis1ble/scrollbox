@@ -23,7 +23,7 @@
         "node_modules"
     ],
     "dependencies": {
-        "jquery": "1.7.2 - 2",
+        "jquery": "1.8 - 2",
         "jquery-mousewheel": ">=3.1.13"
     }
 }
