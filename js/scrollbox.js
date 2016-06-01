@@ -1,5 +1,5 @@
 /*!
- * Scrollbox v2.1.6
+ * Scrollbox v2.2.0
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -10,24 +10,24 @@
 
     var name = 'scrollbox',
         Scrollbox = function ($element, options) {
-            (function (that, options, methods, i) {
+            (function (that, options, methods) {
                 that.options = options;
 
                 that.$element = $element;
                 that.$rail = $(options.templates.rail);
                 that.$bar = $(options.templates.bar);
-
-                for (i in methods) {
-                    if (options[methods[i]]) {
-                        that[methods[i]] = options[methods[i]];
+                
+                $.each(methods, function (i, method) {
+                    if (options[method]) {
+                        that[method] = options[method];
                     }
-                }
+                });
 
-                that._isBarCaptured = that._isShown = false;
+                that._isBarCaptured = that._isShown = that._isCorrectionRequired = false;
                 that._prevY = 0;
                 that._isReachTriggered = { top: false, bottom: false };
                 that._scrollHeight = undefined;
-                that._setScrolledToY();
+                that._setScrolledToY($element.scrollTop());
                 that._barTouchId = that._elementTouchId = that._swipeStartY = that._swipeStartedAt = null;
 
                 that.init();
@@ -48,20 +48,18 @@
             (function (that, options) {
                 that.$wrapper = that.$element
                     .trigger('init.' + name)
-                    .css('overflow', 'hidden')
+                    .addClass('scrollbox-overflowed')
                     .wrap(options.templates.wrapper).parent()
                     .append(that.$rail)
                     .append(that.$bar);
-
+                
                 that._updateBarHeight();
-
-                if ('top' !== options.start) {
-                    that.jump(options.start);
-                }
 
                 if (that._isShown) {
                     that.addListeners();
                 }
+
+                that.jump(options.start);
             })(this, this.options);
         },
 
@@ -153,29 +151,28 @@
         },
 
         _onDocumentTouchMove: function (e) {
-            var touches = e.originalEvent.targetTouches,
-                i;
+            var touches = e.originalEvent.targetTouches;
 
             if (this._isBarCaptured) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._barTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._barTouchId) {
                         e.preventDefault();
 
-                        this._drag(touches[i].pageY);
-                        break;
+                        this._drag(touch.pageY);
+                        return false;
                     }
-                }
+                }, this));
             }
 
             if (null !== this._elementTouchId) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._elementTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._elementTouchId) {
                         e.preventDefault();
 
-                        this._swipe(touches[i].pageY);
-                        break;
+                        this._swipe(touch.pageY);
+                        return false;
                     }
-                }
+                }, this));
             }
         },
 
@@ -184,28 +181,27 @@
                 swipeDuration,
                 swipeDistance,
                 swipeSpeed,
-                offset,
-                i;
+                offset;
 
             if (this._isBarCaptured) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._barTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._barTouchId) {
                         e.preventDefault();
 
                         this._dragStop();
                         this._barTouchId = null;
-                        break;
+                        return false;
                     }
-                }
+                }, this));
             }
 
             if (null !== this._elementTouchId) {
-                for (i in touches) {
-                    if (touches[i].identifier === this._elementTouchId) {
+                $.each(touches, $.proxy(function (i, touch) {
+                    if (touch.identifier === this._elementTouchId) {
                         swipeDuration = Date.now() - this._swipeStartedAt;
 
                         if (swipeDuration <= this.options.momentum.thresholdTime) {
-                            swipeDistance = this._swipeStartY - touches[i].pageY;
+                            swipeDistance = this._swipeStartY - touch.pageY;
                             swipeSpeed = Math.abs(swipeDistance / swipeDuration);
                             offset = swipeSpeed * swipeSpeed * 2 * this.options.momentum.acceleration;
 
@@ -220,16 +216,23 @@
                         }
 
                         this._swipeStartY = this._swipeStartedAt = this._elementTouchId = null;
-                        break;
+                        return false;
                     }
-                }
+                }, this));
             }
         },
 
         _onElementScroll: function (e) {
             e.preventDefault();
+            
+            if (this._isCorrectionRequired) {
+                this._isCorrectionRequired = false;
+            } else {
+                this._setScrolledToY(this.$element.scrollTop());
+            }
 
             this._updateBarPosition();
+            this._checkIsReached();
         },
 
         _onElementTouchStart: function (e) {
@@ -238,12 +241,11 @@
             if (1 == touches.length) {
                 if (this.$element.is(':animated')) {
                     this.$element.stop(true, false);
-                    this._setScrolledToY(this.$element.scrollTop());
                 }
 
                 this._elementTouchId = touches[0].identifier;
                 this._swipeStartY = this._prevY = touches[0].pageY;
-                this._swipeStartedAt = new Date();
+                this._swipeStartedAt = Date.now();
             }
         },
 
@@ -274,39 +276,39 @@
 
         scroll: function (delta, animationOptions) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
-                scrollToY = this._getScrolledToY() + delta,
-                options = this.options,
-                position;
+                destination = this._getScrolledToY() + delta,
+                computedDestination;
 
             this.$element
                 .trigger('scroll.' + name)
                 .stop(true, false);
 
-            if (scrollToY >= max) {
-                scrollToY = max;
-            } else if (scrollToY <= 0) {
-                scrollToY = 0;
-            }
-
-            this._setScrolledToY(scrollToY);
-
-            if (undefined === animationOptions) {
-                this.$element.scrollTop(scrollToY);
+            if (0 === delta) {
+                this._checkIsReached();
             } else {
-                this.$element.animate({
-                    scrollTop: scrollToY
-                }, animationOptions);
-            }
+                if (destination >= max) {
+                    computedDestination = max;
+                } else if (destination <= 0) {
+                    computedDestination = 0;
+                } else {
+                    computedDestination = destination;
+                }
 
-            if (!this._isReachTriggered.bottom && scrollToY + options.distanceToReach >= max) {
-                position = 'bottom';
-            } else if (!this._isReachTriggered.top && scrollToY - options.distanceToReach <= 0) {
-                position = 'top';
-            }
+                if (undefined === animationOptions) {
+                    this._isCorrectionRequired = true;
+                    this.$element.scrollTop(computedDestination);
+                    this._setScrolledToY(computedDestination);
+                } else {
+                    animationOptions.progress = $.proxy(function (animation) {
+                        if (computedDestination !== destination && computedDestination === this._getScrolledToY()) {
+                            animation.stop();
+                        }
+                    }, this);
 
-            if (position) {
-                this.$element.trigger($.Event('reach.' + name, { position: position }));
-                this._isReachTriggered[position] = true;
+                    this.$element.animate({
+                        scrollTop: destination
+                    }, animationOptions);
+                }
             }
         },
 
@@ -337,10 +339,6 @@
         },
 
         _getScrolledToY: function () {
-            if (undefined === this._scrolledToY) {
-                this._scrolledToY = this.$element.scrollTop();
-            }
-
             return this._scrolledToY;
         },
 
@@ -386,14 +384,33 @@
             );
         },
 
-        destroy: function () {
-            this.$wrapper
-                .off('.' + name)
-                .find('*').off('.' + name);
+        _checkIsReached: function () {
+            var scrolledTo = this.$element.scrollTop(),
+                position;
 
+            if (
+                !this._isReachTriggered.bottom
+                && scrolledTo + this.options.distanceToReach >= this._getScrollHeight() - this.$element.outerHeight()
+            ) {
+                position = 'bottom';
+            } else if (
+                !this._isReachTriggered.top
+                && scrolledTo - this.options.distanceToReach <= 0
+            ) {
+                position = 'top';
+            }
+
+            if (position) {
+                this.$element.trigger($.Event('reach.' + name, { position: position }));
+                this._isReachTriggered[position] = true;
+            }
+        },
+
+        destroy: function () {
             this.removeListeners();
 
             this.$element
+                .removeClass('scrollbox-overflowed')
                 .unwrap()
                 .removeData(name);
 
@@ -405,12 +422,10 @@
 
     };
 
-    if ($.easing.momentum === undefined) {
+    if (undefined === $.easing.momentum) {
+        // easeOutExpo
         $.easing.momentum = function (x, t, b, c, d) {
-            var ts = (t /= d) * t,
-                tc = ts * t;
-
-            return b + c * (-1 * ts * ts + 4 * tc + -6 * ts + 4 * t);
+            return t == d ? b + c : c * (- Math.pow(2, -10 * t / d) + 1) + b;
         };
     }
 
