@@ -63,6 +63,9 @@ module.exports = function (grunt) {
                     'dist/css/<%= pkg.name %>.min.css': 'dist/css/<%= pkg.name %>.css'
                 }
             }
+        },
+        qunit: {
+            files: 'tests/index.html'
         }
     });
 
@@ -80,6 +83,7 @@ module.exports = function (grunt) {
         'clean',
         'copy',
         'less',
-        'postcss'
+        'postcss',
+        'qunit'
     ]);
 };

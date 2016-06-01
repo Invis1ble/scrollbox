@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scrollbox Plugin Test Suite</title>
+    <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
+    <link rel="stylesheet" href="../dist/css/scrollbox.css">
+    <style>
+        .scrollbox-bar {
+            min-height: 5px;
+        }
+        .scrollbox-wrapper {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+    <script>
+        QUnit.config.requireExpects = true;
+        QUnit.config.testTimeout  = 20000;
+
+        // Display fixture on-screen to avoid false positives
+        QUnit.begin(function () {
+            $('#qunit-fixture').css({
+                top: 0,
+                left: 0
+            });
+        });
+
+        QUnit.done(function () {
+            $('#qunit-fixture').css({
+                top: '',
+                left: ''
+            });
+        });
+
+        QUnit.testDone(function () {
+            $('#qunit-fixture').empty();
+        });
+    </script>
+    <script src="../node_modules/prosthetic-hand/dist/prosthetic-hand.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="../src/js/scrollbox.js"></script>
+    <script src="unit/scrollbox.js"></script>
+</body>
+</html>

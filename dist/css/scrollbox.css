@@ -5,6 +5,8 @@
  */
 .scrollbox-wrapper {
   position: relative;
+}
+.scrollbox-wrapper .scrollbox-overflowed {
   overflow: hidden;
 }
 .scrollbox-wrapper > :first-child {

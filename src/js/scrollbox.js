@@ -10,20 +10,20 @@
 
     var name = 'scrollbox',
         Scrollbox = function ($element, options) {
-            (function (that, options, methods, i) {
+            (function (that, options, methods) {
                 that.options = options;
 
                 that.$element = $element;
                 that.$rail = $(options.templates.rail);
                 that.$bar = $(options.templates.bar);
-
-                for (i in methods) {
-                    if (options[methods[i]]) {
-                        that[methods[i]] = options[methods[i]];
+                
+                $.each(methods, function (i, method) {
+                    if (options[method]) {
+                        that[method] = options[method];
                     }
-                }
+                });
 
-                that._isBarCaptured = that._isShown = false;
+                that._isBarCaptured = that._isShown = that._isCorrectionRequired = false;
                 that._prevY = 0;
                 that._isReachTriggered = { top: false, bottom: false };
                 that._scrollHeight = undefined;
@@ -59,9 +59,7 @@
                     that.addListeners();
                 }
 
-                if ('top' !== options.start) {
-                    that.jump(options.start);
-                }
+                that.jump(options.start);
             })(this, this.options);
         },
 
@@ -226,9 +224,15 @@
 
         _onElementScroll: function (e) {
             e.preventDefault();
+            
+            if (this._isCorrectionRequired) {
+                this._isCorrectionRequired = false;
+            } else {
+                this._setScrolledToY(this.$element.scrollTop());
+            }
 
-            this._setScrolledToY(this.$element.scrollTop());
             this._updateBarPosition();
+            this._checkIsReached();
         },
 
         _onElementTouchStart: function (e) {
@@ -241,7 +245,7 @@
 
                 this._elementTouchId = touches[0].identifier;
                 this._swipeStartY = this._prevY = touches[0].pageY;
-                this._swipeStartedAt = new Date();
+                this._swipeStartedAt = Date.now();
             }
         },
 
@@ -272,46 +276,39 @@
 
         scroll: function (delta, animationOptions) {
             var max = this._getScrollHeight() - this.$element.outerHeight(),
-                desiredDestination = this._getScrolledToY() + delta,
-                options = this.options,
-                destination,
-                position;
+                destination = this._getScrolledToY() + delta,
+                computedDestination;
 
             this.$element
                 .trigger('scroll.' + name)
                 .stop(true, false);
 
-            if (desiredDestination >= max) {
-                destination = max;
-            } else if (desiredDestination <= 0) {
-                destination = 0;
+            if (0 === delta) {
+                this._checkIsReached();
             } else {
-                destination = parseInt(desiredDestination, 10);
-            }
+                if (destination >= max) {
+                    computedDestination = max;
+                } else if (destination <= 0) {
+                    computedDestination = 0;
+                } else {
+                    computedDestination = destination;
+                }
 
-            if (undefined === animationOptions) {
-                this.$element.scrollTop(destination);
-            } else {
-                this.$element.animate({
-                    scrollTop: desiredDestination
-                }, $.extend({}, animationOptions, {
-                    progress: $.proxy(function (animation) {
-                        if (this._getScrolledToY() === destination) {
+                if (undefined === animationOptions) {
+                    this._isCorrectionRequired = true;
+                    this.$element.scrollTop(computedDestination);
+                    this._setScrolledToY(computedDestination);
+                } else {
+                    animationOptions.progress = $.proxy(function (animation) {
+                        if (computedDestination !== destination && computedDestination === this._getScrolledToY()) {
                             animation.stop();
                         }
-                    }, this)
-                }));
-            }
+                    }, this);
 
-            if (!this._isReachTriggered.bottom && destination + options.distanceToReach >= max) {
-                position = 'bottom';
-            } else if (!this._isReachTriggered.top && destination - options.distanceToReach <= 0) {
-                position = 'top';
-            }
-
-            if (position) {
-                this.$element.trigger($.Event('reach.' + name, { position: position }));
-                this._isReachTriggered[position] = true;
+                    this.$element.animate({
+                        scrollTop: destination
+                    }, animationOptions);
+                }
             }
         },
 
@@ -385,6 +382,28 @@
                 'top',
                 (elementHeight - this.$bar.outerHeight()) * (this.$element.scrollTop() / (this._getScrollHeight() - elementHeight))
             );
+        },
+
+        _checkIsReached: function () {
+            var scrolledTo = this.$element.scrollTop(),
+                position;
+
+            if (
+                !this._isReachTriggered.bottom
+                && scrolledTo + this.options.distanceToReach >= this._getScrollHeight() - this.$element.outerHeight()
+            ) {
+                position = 'bottom';
+            } else if (
+                !this._isReachTriggered.top
+                && scrolledTo - this.options.distanceToReach <= 0
+            ) {
+                position = 'top';
+            }
+
+            if (position) {
+                this.$element.trigger($.Event('reach.' + name, { position: position }));
+                this._isReachTriggered[position] = true;
+            }
         },
 
         destroy: function () {
