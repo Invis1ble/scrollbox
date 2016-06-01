@@ -38,7 +38,7 @@ In order to use the plugin, you have to add `link` tag to your html
 and include the scripts e.g.
 
 ```html
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="/path/to/jquery.mousewheel.min.js" type="text/javascript"></script>
 <script src="/path/to/scrollbox.min.js" type="text/javascript"></script>
 ```
