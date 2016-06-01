@@ -86,4 +86,8 @@ module.exports = function (grunt) {
         'postcss',
         'qunit'
     ]);
+
+    grunt.registerTask('ci', [
+        'production'
+    ]);
 };
