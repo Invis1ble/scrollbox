@@ -685,7 +685,7 @@
             }, 20);
         });
 
-        QUnit.test('should scroll by the distance on drag (mouse)', function (assert) {
+        QUnit.test('should scroll by the distance on drag bar (mouse)', function (assert) {
             assert.expect(2);
 
             var done = assert.async(2),
