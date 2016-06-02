@@ -31,10 +31,15 @@
         "jquery-plugin",
         "ecosystem:jquery",
         "scroll",
+        "scrolling",
         "scrollbar",
         "ui",
         "trigger",
-        "touchscreen"
+        "infinite-scrolling",
+        "touchscreen",
+        "momentum",
+        "kinetic",
+        "inertia"
     ],
     "author": "Max Invis1ble",
     "license": "MIT",

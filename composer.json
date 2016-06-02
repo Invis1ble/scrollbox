@@ -6,10 +6,15 @@
     "keywords": [
         "jquery",
         "scroll",
+        "scrolling",
         "scrollbar",
         "ui",
         "trigger",
-        "touchscreen"
+        "infinite-scrolling",
+        "touchscreen",
+        "momentum",
+        "kinetic",
+        "inertia"
     ],
     "authors": [
         {
