@@ -23,6 +23,7 @@ Several quick start options are available:
 * [Download the latest release](https://github.com/Invis1ble/scrollbox/archive/master.zip).
 * Clone the repo: `git clone https://github.com/Invis1ble/scrollbox.git`.
 * Install with [Bower](http://bower.io): `bower install scrollbox`.
+* Install with [npm](https://www.npmjs.com/): `npm install scrollbox`.
 * Install with [Composer](https://getcomposer.org): `composer require invis1ble/scrollbox`.
 
 After installing the plugin you have to install [jquery-mousewheel](https://github.com/jquery/jquery-mousewheel).
