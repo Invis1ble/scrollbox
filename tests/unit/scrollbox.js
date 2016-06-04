@@ -700,7 +700,7 @@
         });
 
         QUnit.test('should scroll by the distance on drag bar (mouse)', function (assert) {
-            assert.expect(1);
+            assert.expect(2);
 
             var scrollboxMaxHeight = 50,
                 contentHeight = 200,
@@ -740,6 +740,32 @@
                 $scrollbox.scrollTop() - scrollTop,
                 distance,
                 'scrolled down by ' + Math.abs(distance) + 'px'
+            );
+
+            scrollTop = $scrollbox.scrollTop();
+            barOffset = $bar.offset();
+            delta = -8;
+
+            $bar
+                .trigger($.Event('mousedown', {
+                    which: 1,
+                    pageY: barOffset.top
+                }));
+
+            $(document)
+                .trigger($.Event('mousemove', {
+                    pageY: barOffset.top + delta
+                }))
+                .trigger($.Event('mouseup', {
+                    which: 1
+                }));
+
+            distance = delta / ratio;
+
+            assert.strictEqual(
+                $scrollbox.scrollTop() - scrollTop,
+                distance,
+                'scrolled up by ' + Math.abs(distance) + 'px'
             );
         });
 
