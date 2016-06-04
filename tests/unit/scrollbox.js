@@ -1,4 +1,4 @@
-(function (QUnit, $) {
+(function (QUnit, $, Modernizr) {
     'use strict';
 
     var createScrollbox = function (scrollboxMaxHeight, contentHeight) {
@@ -570,23 +570,17 @@
 
         QUnit.module('Scrollbox GUI interaction');
 
-        QUnit.test('should change bar state if it is captured or released', function (assert) {
-            assert.expect(4);
+        QUnit.test('should change bar state if it is captured or released (mouse)', function (assert) {
+            assert.expect(2);
 
-            var done = assert.async(2),
-                $scrollbox = createScrollbox(40, 150),
-                $body = $('body'),
-                hand = new Hand({timing: 'minimal'}),
-                finger,
-                $bar,
-                barOffset;
+            var $scrollbox = createScrollbox(40, 150),
+                $bar;
 
             $scrollbox
                 .appendTo('#qunit-fixture')
                 .scrollbox();
 
             $bar = $('.scrollbox-bar', $scrollbox.parent());
-            barOffset = $bar.offset();
 
             $bar.trigger($.Event('mousedown', {
                 which: 1
@@ -594,45 +588,65 @@
 
             assert.ok(
                 $bar.hasClass('scrollbox-bar-captured'),
-                'bar state has been changed to captured (mouse)'
+                'bar state has been changed to captured'
             );
 
-            $body.trigger($.Event('mouseup', {
+            $(document).trigger($.Event('mouseup', {
                 which: 1
             }));
 
             assert.notOk(
                 $bar.hasClass('scrollbox-bar-captured'),
-                'bar state has been changed to released (mouse)'
+                'bar state has been changed to released'
             );
+        });
 
-            finger = hand.growFinger('touch', {
-                x: barOffset.left + 1,
-                y: barOffset.top + 1
-            });
+        if (Modernizr.touchevents) {
+            QUnit.test('should change bar state if it is captured or released (touch)', function (assert) {
+                assert.expect(2);
 
-            finger.down();
+                var done = assert.async(2),
+                    $scrollbox = createScrollbox(40, 150),
+                    hand = new Hand({timing: 'minimal'}),
+                    finger,
+                    $bar,
+                    barOffset;
 
-            setTimeout(function () {
-                assert.ok(
-                    $bar.hasClass('scrollbox-bar-captured'),
-                    'bar state has been changed to captured (touch)'
-                );
+                $scrollbox
+                    .appendTo('#qunit-fixture')
+                    .scrollbox();
 
-                done();
+                $bar = $('.scrollbox-bar', $scrollbox.parent());
+                barOffset = $bar.offset();
 
-                finger.up();
+                finger = hand.growFinger('touch', {
+                    x: barOffset.left + 1,
+                    y: barOffset.top + 1
+                });
+
+                finger.down();
 
                 setTimeout(function () {
-                    assert.notOk(
+                    assert.ok(
                         $bar.hasClass('scrollbox-bar-captured'),
-                        'bar state has been changed to released (touch)'
+                        'bar state has been changed to captured (touch)'
                     );
 
                     done();
+
+                    finger.up();
+
+                    setTimeout(function () {
+                        assert.notOk(
+                            $bar.hasClass('scrollbox-bar-captured'),
+                            'bar state has been changed to released (touch)'
+                        );
+
+                        done();
+                    }, 20);
                 }, 20);
-            }, 20);
-        });
+            });
+        }
 
         QUnit.test('should scroll by the distance on mouse wheel', function (assert) {
             assert.expect(2);
@@ -686,10 +700,9 @@
         });
 
         QUnit.test('should scroll by the distance on drag bar (mouse)', function (assert) {
-            assert.expect(2);
+            assert.expect(1);
 
-            var done = assert.async(2),
-                scrollboxMaxHeight = 50,
+            var scrollboxMaxHeight = 50,
                 contentHeight = 200,
                 ratio = scrollboxMaxHeight / contentHeight,
                 $scrollbox = createScrollbox(scrollboxMaxHeight, contentHeight)
@@ -704,236 +717,216 @@
                 scrollTop;
 
             scrollTop = $scrollbox.scrollTop();
-
-            delta = {
-                x: 3,
-                y: 10
-            };
-
             barOffset = $bar.offset();
+            delta = 10;
 
-            moveFingerBy('mouse', {
-                x: barOffset.left,
-                y: barOffset.top
-            }, delta, 20, 'instant').done(function () {
-                distance = delta.y / ratio;
+            $bar
+                .trigger($.Event('mousedown', {
+                    which: 1,
+                    pageY: barOffset.top
+                }));
 
-                assert.strictEqual(
-                    $scrollbox.scrollTop() - scrollTop,
-                    distance,
-                    'scrolled down by ' + Math.abs(distance) + 'px'
-                );
+            $(document)
+                .trigger($.Event('mousemove', {
+                    pageY: barOffset.top + delta
+                }))
+                .trigger($.Event('mouseup', {
+                    which: 1
+                }));
 
-                done();
+            distance = delta / ratio;
 
-                scrollTop = $scrollbox.scrollTop();
-
-                delta = {
-                    x: -4,
-                    y: -8
-                };
-
-                barOffset = $bar.offset();
-
-                moveFingerBy('mouse', {
-                    x: barOffset.left,
-                    y: barOffset.top + 10
-                }, delta, 20, 'instant').done(function () {
-                    distance = delta.y / ratio;
-
-                    assert.strictEqual(
-                        $scrollbox.scrollTop() - scrollTop,
-                        distance,
-                        'scrolled up by ' + Math.abs(distance) + 'px'
-                    );
-
-                    done();
-                });
-            });
+            assert.strictEqual(
+                $scrollbox.scrollTop() - scrollTop,
+                distance,
+                'scrolled down by ' + Math.abs(distance) + 'px'
+            );
         });
 
-        QUnit.test('should scroll by the distance on drag bar (touch)', function (assert) {
-            assert.expect(2);
+        if (Modernizr.touchevents) {
+            QUnit.test('should scroll by the distance on drag bar (touch)', function (assert) {
+                assert.expect(2);
 
-            var done = assert.async(2),
-                scrollboxMaxHeight = 500,
-                contentHeight = 5000,
-                ratio = scrollboxMaxHeight / contentHeight,
-                $scrollbox = createScrollbox(scrollboxMaxHeight, contentHeight)
-                    .appendTo('#qunit-fixture')
-                    .scrollbox({
-                        start: 'top'
-                    }),
-                $bar = $('.scrollbox-bar', $scrollbox.parent()),
-                barOffset,
-                delta,
-                distance,
-                scrollTop;
-
-            scrollTop = $scrollbox.scrollTop();
-
-            delta = {
-                x: 0,
-                y: 20
-            };
-
-            barOffset = $bar.offset();
-
-            moveFingerBy('touch', {
-                x: barOffset.left,
-                y: barOffset.top
-            }, delta, 20, 'instant').done(function () {
-                distance = delta.y / ratio;
-
-                assert.strictEqual(
-                    $scrollbox.scrollTop() - scrollTop,
+                var done = assert.async(2),
+                    scrollboxMaxHeight = 500,
+                    contentHeight = 5000,
+                    ratio = scrollboxMaxHeight / contentHeight,
+                    $scrollbox = createScrollbox(scrollboxMaxHeight, contentHeight)
+                        .appendTo('#qunit-fixture')
+                        .scrollbox({
+                            start: 'top'
+                        }),
+                    $bar = $('.scrollbox-bar', $scrollbox.parent()),
+                    barOffset,
+                    delta,
                     distance,
-                    'scrolled down by ' + Math.abs(distance) + 'px'
-                );
-
-                done();
+                    scrollTop;
 
                 scrollTop = $scrollbox.scrollTop();
 
                 delta = {
                     x: 0,
-                    y: -8
+                    y: 20
                 };
 
                 barOffset = $bar.offset();
 
                 moveFingerBy('touch', {
                     x: barOffset.left,
-                    y: barOffset.top + 10
+                    y: barOffset.top
                 }, delta, 20, 'instant').done(function () {
                     distance = delta.y / ratio;
 
                     assert.strictEqual(
                         $scrollbox.scrollTop() - scrollTop,
                         distance,
-                        'scrolled up by ' + Math.abs(distance) + 'px'
+                        'scrolled down by ' + Math.abs(distance) + 'px'
                     );
 
                     done();
+
+                    scrollTop = $scrollbox.scrollTop();
+
+                    delta = {
+                        x: 0,
+                        y: -8
+                    };
+
+                    barOffset = $bar.offset();
+
+                    moveFingerBy('touch', {
+                        x: barOffset.left,
+                        y: barOffset.top + 10
+                    }, delta, 20, 'instant').done(function () {
+                        distance = delta.y / ratio;
+
+                        assert.strictEqual(
+                            $scrollbox.scrollTop() - scrollTop,
+                            distance,
+                            'scrolled up by ' + Math.abs(distance) + 'px'
+                        );
+
+                        done();
+                    });
                 });
             });
-        });
 
-        QUnit.test('should scroll by the distance on drag container', function (assert) {
-            assert.expect(2);
+            QUnit.test('should scroll by the distance on drag container', function (assert) {
+                assert.expect(2);
 
-            var done = assert.async(2),
-                scrollboxMaxHeight = 500,
-                contentHeight = 5000,
-                $scrollbox = createScrollbox(scrollboxMaxHeight, contentHeight)
-                    .appendTo('#qunit-fixture')
-                    .scrollbox({
-                        start: 'top'
-                    }),
-                containerOffset = $scrollbox.offset(),
-                momentumThresholdTime = $scrollbox.data('scrollbox').options.momentum.thresholdTime,
-                delta,
-                scrollTop;
-
-            scrollTop = $scrollbox.scrollTop();
-
-            delta = {
-                x: 0,
-                y: -100
-            };
-
-            moveFingerBy('touch', {
-                x: containerOffset.left,
-                y: containerOffset.top + 150
-            }, delta, momentumThresholdTime + 1).done(function () {
-                assert.strictEqual(
-                    $scrollbox.scrollTop() - scrollTop,
-                    -delta.y,
-                    'scrolled down by ' + Math.abs(delta.y) + 'px'
-                );
-
-                done();
+                var done = assert.async(2),
+                    scrollboxMaxHeight = 500,
+                    contentHeight = 5000,
+                    $scrollbox = createScrollbox(scrollboxMaxHeight, contentHeight)
+                        .appendTo('#qunit-fixture')
+                        .scrollbox({
+                            start: 'top'
+                        }),
+                    containerOffset = $scrollbox.offset(),
+                    momentumThresholdTime = $scrollbox.data('scrollbox').options.momentum.thresholdTime,
+                    delta,
+                    scrollTop;
 
                 scrollTop = $scrollbox.scrollTop();
 
                 delta = {
                     x: 0,
-                    y: 100
+                    y: -100
                 };
 
                 moveFingerBy('touch', {
                     x: containerOffset.left,
-                    y: containerOffset.top + 50
+                    y: containerOffset.top + 150
                 }, delta, momentumThresholdTime + 1).done(function () {
                     assert.strictEqual(
                         $scrollbox.scrollTop() - scrollTop,
                         -delta.y,
-                        'scrolled up by ' + Math.abs(delta.y) + 'px'
+                        'scrolled down by ' + Math.abs(delta.y) + 'px'
                     );
 
                     done();
+
+                    scrollTop = $scrollbox.scrollTop();
+
+                    delta = {
+                        x: 0,
+                        y: 100
+                    };
+
+                    moveFingerBy('touch', {
+                        x: containerOffset.left,
+                        y: containerOffset.top + 50
+                    }, delta, momentumThresholdTime + 1).done(function () {
+                        assert.strictEqual(
+                            $scrollbox.scrollTop() - scrollTop,
+                            -delta.y,
+                            'scrolled up by ' + Math.abs(delta.y) + 'px'
+                        );
+
+                        done();
+                    });
                 });
             });
-        });
 
-        QUnit.test('should scroll with inertia on swipe container', function (assert) {
-            assert.expect(2);
+            QUnit.test('should scroll with inertia on swipe container', function (assert) {
+                assert.expect(2);
 
-            var done = assert.async(2),
-                scrollboxMaxHeight = 500,
-                contentHeight = 5000,
-                $scrollbox = createScrollbox(scrollboxMaxHeight, contentHeight)
-                    .appendTo('#qunit-fixture')
-                    .scrollbox({
-                        start: 'top'
-                    }),
-                containerOffset = $scrollbox.offset(),
-                delta,
-                scrollTop,
-                distance;
-
-            scrollTop = $scrollbox.scrollTop();
-
-            delta = {
-                x: 0,
-                y: -100
-            };
-
-            moveFingerBy('touch', {
-                x: containerOffset.left,
-                y: containerOffset.top + 150
-            }, delta, 100).done(function () {
-                distance = Math.abs($scrollbox.scrollTop() - scrollTop);
-
-                assert.ok(
-                    distance > Math.abs(delta.y),
-                    'scrolled down with inertia by ' + distance + 'px'
-                );
-
-                done();
+                var done = assert.async(2),
+                    scrollboxMaxHeight = 500,
+                    contentHeight = 5000,
+                    $scrollbox = createScrollbox(scrollboxMaxHeight, contentHeight)
+                        .appendTo('#qunit-fixture')
+                        .scrollbox({
+                            start: 'top'
+                        }),
+                    containerOffset = $scrollbox.offset(),
+                    delta,
+                    scrollTop,
+                    distance;
 
                 scrollTop = $scrollbox.scrollTop();
 
                 delta = {
                     x: 0,
-                    y: 100
+                    y: -100
                 };
 
                 moveFingerBy('touch', {
                     x: containerOffset.left,
-                    y: containerOffset.top + 50
+                    y: containerOffset.top + 150
                 }, delta, 100).done(function () {
                     distance = Math.abs($scrollbox.scrollTop() - scrollTop);
 
                     assert.ok(
                         distance > Math.abs(delta.y),
-                        'scrolled up with inertia by ' + distance + 'px'
+                        'scrolled down with inertia by ' + distance + 'px'
                     );
 
                     done();
+
+                    scrollTop = $scrollbox.scrollTop();
+
+                    delta = {
+                        x: 0,
+                        y: 100
+                    };
+
+                    moveFingerBy('touch', {
+                        x: containerOffset.left,
+                        y: containerOffset.top + 50
+                    }, delta, 100).done(function () {
+                        distance = Math.abs($scrollbox.scrollTop() - scrollTop);
+
+                        assert.ok(
+                            distance > Math.abs(delta.y),
+                            'scrolled up with inertia by ' + distance + 'px'
+                        );
+
+                        done();
+                    });
                 });
             });
-        });
+        }
     });
-})(QUnit, jQuery);
+})(QUnit, jQuery, Modernizr);
 

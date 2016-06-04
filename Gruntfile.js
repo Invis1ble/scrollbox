@@ -64,6 +64,18 @@ module.exports = function (grunt) {
                 }
             }
         },
+        modernizr: {
+            tests: {
+                crawl: false,
+                customTests: [],
+                dest: 'tests/vendor/modernizr/modernizr-output.js',
+                tests: [
+                    'touchevents'
+                ],
+                options: [],
+                uglify: false
+            }
+        },
         qunit: {
             files: 'tests/index.html'
         }
@@ -84,6 +96,7 @@ module.exports = function (grunt) {
         'copy',
         'less',
         'postcss',
+        'modernizr',
         'qunit'
     ]);
 
