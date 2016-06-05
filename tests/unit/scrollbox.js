@@ -711,14 +711,16 @@
                         start: 'top'
                     }),
                 $bar = $('.scrollbox-bar', $scrollbox.parent()),
+                allowedInaccuracy = 1,
                 barOffset,
                 delta,
-                distance,
+                expectedDistance,
+                actualDistance,
                 scrollTop;
 
             scrollTop = $scrollbox.scrollTop();
             barOffset = $bar.offset();
-            delta = 8;
+            delta = 10;
 
             $bar
                 .trigger($.Event('mousedown', {
@@ -734,12 +736,12 @@
                     which: 1
                 }));
 
-            distance = delta / ratio;
+            expectedDistance = delta / ratio;
+            actualDistance = $scrollbox.scrollTop() - scrollTop;
 
-            assert.strictEqual(
-                $scrollbox.scrollTop() - scrollTop,
-                distance,
-                'scrolled down by ' + Math.abs(distance) + 'px'
+            assert.ok(
+                Math.abs(expectedDistance - actualDistance) <= allowedInaccuracy,
+                'scrolled down by ' + Math.abs(actualDistance) + 'px (expected ' + Math.abs(expectedDistance) + 'px; inaccuracy ' + allowedInaccuracy + 'px)'
             );
 
             scrollTop = $scrollbox.scrollTop();
@@ -760,12 +762,12 @@
                     which: 1
                 }));
 
-            distance = delta / ratio;
+            expectedDistance = delta / ratio;
+            actualDistance = $scrollbox.scrollTop() - scrollTop;
 
-            assert.strictEqual(
-                $scrollbox.scrollTop() - scrollTop,
-                distance,
-                'scrolled up by ' + Math.abs(distance) + 'px'
+            assert.ok(
+                Math.abs(expectedDistance - actualDistance) <= allowedInaccuracy,
+                'scrolled up by ' + Math.abs(actualDistance) + 'px (expected ' + Math.abs(expectedDistance) + 'px; inaccuracy ' + allowedInaccuracy + 'px)'
             );
         });
 
