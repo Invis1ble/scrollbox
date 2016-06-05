@@ -16,6 +16,9 @@ A lightweight jQuery custom scrollbar plugin, that triggers event when reached t
 
 ... and others
 
+Scrollbox is automatically tested on the following browsers
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/Invis1ble.svg)](https://saucelabs.com/u/Invis1ble)
+
 ## Installation
 
 Several quick start options are available:
