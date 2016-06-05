@@ -1,15 +1,30 @@
 [
+    # Windows 7
     {
         browserName: 'chrome',
-        platform: 'linux'
+        platform: 'Windows 7'
     },
     {
         browserName: 'firefox',
-        platform: 'linux'
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'internet explorer',
+        platform: 'Windows 7'
+    },
+
+    # Linux
+    {
+        browserName: 'chrome',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Linux'
     },
     {
         browserName: 'opera',
         version: '12',
-        platform: 'linux'
+        platform: 'Linux'
     }
 ]
