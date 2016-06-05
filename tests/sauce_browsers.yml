@@ -79,7 +79,42 @@
 #    },
     {
         browserName: 'firefox',
-        version: '4',
+        version: '5',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '10',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '15',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '20',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '25',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '30',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '35',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '40',
         platform: 'Linux'
     }
 #    {
