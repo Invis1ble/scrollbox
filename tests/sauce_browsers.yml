@@ -1,0 +1,15 @@
+[
+    {
+        browserName: 'chrome',
+        platform: 'linux'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'linux'
+    },
+    {
+        browserName: 'opera',
+        version: '12',
+        platform: 'linux'
+    }
+]

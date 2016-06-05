@@ -103,13 +103,7 @@ module.exports = function (grunt) {
                     build: testBuildNumber,
                     urls: ['http://localhost:9999/tests/index.html'],
                     testname: 'QUnit test for Scrollbox',
-                    browsers: [
-                        {
-                            browserName: 'opera',
-                            version: '12',
-                            platform: 'linux'
-                        }
-                    ]
+                    browsers: grunt.file.readYAML('tests/sauce_browsers.yml')
                 }
             }
         }
