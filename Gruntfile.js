@@ -101,6 +101,7 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     build: testBuildNumber,
+                    throttled: 5,
                     urls: ['http://localhost:9999/tests/index.html'],
                     testname: 'QUnit test for Scrollbox',
                     browsers: grunt.file.readYAML('tests/sauce_browsers.yml')
