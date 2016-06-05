@@ -2,6 +2,15 @@ module.exports = function (grunt) {
     'use strict';
 
     require('load-grunt-tasks')(grunt);
+
+    var testBuildNumber;
+    
+    if (process.env.TRAVIS_JOB_ID) {
+        testBuildNumber = "travis-" + process.env.TRAVIS_JOB_ID;
+    } else {
+        var currentTime = new Date();
+        testBuildNumber = "manual-" + currentTime.getTime();
+    }
     
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -78,6 +87,31 @@ module.exports = function (grunt) {
         },
         qunit: {
             files: 'tests/index.html'
+        },
+        connect: {
+            tests: {
+                options: {
+                    base: '.',
+                    hostname: '127.0.0.1',
+                    port: 9999
+                }
+            }
+        },
+        'saucelabs-qunit': {
+            all: {
+                options: {
+                    build: testBuildNumber,
+                    urls: ['http://localhost:9999/tests/index.html'],
+                    testname: 'QUnit test for Scrollbox',
+                    browsers: [
+                        {
+                            browserName: 'opera',
+                            version: '12',
+                            platform: 'linux'
+                        }
+                    ]
+                }
+            }
         }
     });
 
@@ -100,7 +134,13 @@ module.exports = function (grunt) {
         'qunit'
     ]);
 
-    grunt.registerTask('ci', [
-        'production'
-    ]);
+    var ciTasks = ['production'];
+
+    // See https://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests
+    if (process.env.TRAVIS_PULL_REQUEST === 'false') {
+        ciTasks.push('connect');
+        ciTasks.push('saucelabs-qunit');
+    }
+
+    grunt.registerTask('ci', ciTasks);
 };
