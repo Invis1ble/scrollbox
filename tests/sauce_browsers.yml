@@ -1,90 +1,90 @@
 [
-    # Windows 10
-    {
-        browserName: 'chrome',
-        platform: 'Windows 10'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'Windows 10'
-    },
+#    # Windows 10
+#    {
+#        browserName: 'chrome',
+#        platform: 'Windows 10'
+#    },
+#    {
+#        browserName: 'firefox',
+#        platform: 'Windows 10'
+#    },
+#    {
+#        browserName: 'firefox',
+#        version: '4',
+#        platform: 'Windows 10'
+#    },
+#    {
+#        browserName: 'internet explorer',
+#        platform: 'Windows 10'
+#    },
+#    {
+#        browserName: 'MicrosoftEdge',
+#        platform: 'Windows 10'
+#    },
+#
+#    # Windows 8.1
+#    {
+#        browserName: 'chrome',
+#        platform: 'Windows 8.1'
+#    },
+#    {
+#        browserName: 'firefox',
+#        platform: 'Windows 8.1'
+#    },
+#    {
+#        browserName: 'firefox',
+#        version: '4',
+#        platform: 'Windows 8.1'
+#    },
+#    {
+#        browserName: 'internet explorer',
+#        platform: 'Windows 8.1'
+#    },
+#
+#    # Windows 7
+#    {
+#        browserName: 'chrome',
+#        platform: 'Windows 7'
+#    },
+#    {
+#        browserName: 'firefox',
+#        platform: 'Windows 7'
+#    },
+#    {
+#        browserName: 'firefox',
+#        version: '4',
+#        platform: 'Windows 7'
+#    },
+#    {
+#        browserName: 'internet explorer',
+#        platform: 'Windows 7'
+#    },
+#    {
+#        browserName: 'safari',
+#        platform: 'Windows 7'
+#    },
+#    {
+#        browserName: 'opera',
+#        platform: 'Windows 7'
+#    },
+#
+#    # Linux
+#    {
+#        browserName: 'chrome',
+#        platform: 'Linux'
+#    },
+#    {
+#        browserName: 'firefox',
+#        platform: 'Linux'
+#    },
     {
         browserName: 'firefox',
         version: '4',
-        platform: 'Windows 10'
-    },
-    {
-        browserName: 'internet explorer',
-        platform: 'Windows 10'
-    },
-    {
-        browserName: 'MicrosoftEdge',
-        platform: 'Windows 10'
-    },
-
-    # Windows 8.1
-    {
-        browserName: 'chrome',
-        platform: 'Windows 8.1'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'Windows 8.1'
-    },
-    {
-        browserName: 'firefox',
-        version: '4',
-        platform: 'Windows 8.1'
-    },
-    {
-        browserName: 'internet explorer',
-        platform: 'Windows 8.1'
-    },
-
-    # Windows 7
-    {
-        browserName: 'chrome',
-        platform: 'Windows 7'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'Windows 7'
-    },
-    {
-        browserName: 'firefox',
-        version: '4',
-        platform: 'Windows 7'
-    },
-    {
-        browserName: 'internet explorer',
-        platform: 'Windows 7'
-    },
-    {
-        browserName: 'safari',
-        platform: 'Windows 7'
-    },
-    {
-        browserName: 'opera',
-        platform: 'Windows 7'
-    },
-
-    # Linux
-    {
-        browserName: 'chrome',
-        platform: 'Linux'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'Linux'
-    },
-    {
-        browserName: 'firefox',
-        version: '4',
-        platform: 'Linux'
-    },
-    {
-        browserName: 'opera',
-        version: '12',
         platform: 'Linux'
     }
+#    {
+#        browserName: 'opera',
+#        version: '12',
+#        platform: 'Linux'
+#    }
 ]
