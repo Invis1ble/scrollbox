@@ -5,6 +5,11 @@
         platform: 'Windows 10'
     },
     {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Windows 10'
+    },
+    {
         browserName: 'firefox',
         platform: 'Windows 10'
     },
@@ -28,6 +33,11 @@
         platform: 'Windows 8.1'
     },
     {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Windows 8.1'
+    },
+    {
         browserName: 'firefox',
         platform: 'Windows 8.1'
     },
@@ -44,6 +54,11 @@
     # Windows 7
     {
         browserName: 'chrome',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
         platform: 'Windows 7'
     },
     {
@@ -71,6 +86,11 @@
     # Linux
     {
         browserName: 'chrome',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
         platform: 'Linux'
     },
     {
