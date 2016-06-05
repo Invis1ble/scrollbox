@@ -718,7 +718,7 @@
 
             scrollTop = $scrollbox.scrollTop();
             barOffset = $bar.offset();
-            delta = 10;
+            delta = 1;
 
             $bar
                 .trigger($.Event('mousedown', {
@@ -744,7 +744,7 @@
 
             scrollTop = $scrollbox.scrollTop();
             barOffset = $bar.offset();
-            delta = -8;
+            delta = -1;
 
             $bar
                 .trigger($.Event('mousedown', {
