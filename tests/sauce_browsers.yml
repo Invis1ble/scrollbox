@@ -1,4 +1,36 @@
 [
+    # Windows 8.1
+    {
+        browserName: 'chrome',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'internet explorer',
+        platform: 'Windows 8.1'
+    },
+
+    # Windows 10
+    {
+        browserName: 'chrome',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'internet explorer',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'MicrosoftEdge',
+        platform: 'Windows 10'
+    },
+
     # Windows 7
     {
         browserName: 'chrome',
@@ -10,6 +42,14 @@
     },
     {
         browserName: 'internet explorer',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'safari',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'opera',
         platform: 'Windows 7'
     },
 
