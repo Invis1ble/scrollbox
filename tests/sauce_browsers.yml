@@ -1,18 +1,4 @@
 [
-    # Windows 8.1
-    {
-        browserName: 'chrome',
-        platform: 'Windows 8.1'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'Windows 8.1'
-    },
-    {
-        browserName: 'internet explorer',
-        platform: 'Windows 8.1'
-    },
-
     # Windows 10
     {
         browserName: 'chrome',
@@ -20,6 +6,11 @@
     },
     {
         browserName: 'firefox',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'firefox',
+        version: '4',
         platform: 'Windows 10'
     },
     {
@@ -31,6 +22,25 @@
         platform: 'Windows 10'
     },
 
+    # Windows 8.1
+    {
+        browserName: 'chrome',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'firefox',
+        version: '4',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'internet explorer',
+        platform: 'Windows 8.1'
+    },
+
     # Windows 7
     {
         browserName: 'chrome',
@@ -38,6 +48,11 @@
     },
     {
         browserName: 'firefox',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'firefox',
+        version: '4',
         platform: 'Windows 7'
     },
     {
@@ -60,6 +75,11 @@
     },
     {
         browserName: 'firefox',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '4',
         platform: 'Linux'
     },
     {
