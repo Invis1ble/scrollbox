@@ -123,6 +123,34 @@
         platform: 'Windows XP'
     },
 
+    # OS X 10.11
+    {
+        browserName: 'safari',
+        platform: 'OS X 10.11'
+    },
+    {
+        browserName: 'chrome',
+        platform: 'OS X 10.11'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'OS X 10.11'
+    },
+
+    # OS X 10.10
+    {
+        browserName: 'safari',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: 'chrome',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'OS X 10.10'
+    },
+
     # Linux
     {
         browserName: 'chrome',
