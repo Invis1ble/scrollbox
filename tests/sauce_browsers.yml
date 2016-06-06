@@ -150,6 +150,11 @@
         browserName: 'firefox',
         platform: 'OS X 10.10'
     },
+    {
+        browserName: "iphone",
+        version: "9.2",
+        platform: "OS X 10.10"
+    },
 
     # Linux
     {
