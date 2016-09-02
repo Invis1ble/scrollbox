@@ -38,7 +38,9 @@ module.exports = function (grunt) {
                 failOnError: true,
                 processors: [
                     require('postcss-will-change'),
-                    require('postcss-opacity'),
+                    require('postcss-opacity')({
+                        legacy: true
+                    }),
                     require('autoprefixer')({ browsers: [
                         'last 100 versions', // LOL
                         'ie >= 7'
