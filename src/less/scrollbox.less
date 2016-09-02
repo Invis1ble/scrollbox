@@ -1,5 +1,5 @@
 /*!
- * Scrollbox v2.4.0
+ * Scrollbox v3.0.0-alpha
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */

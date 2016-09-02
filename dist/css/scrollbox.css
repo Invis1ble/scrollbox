@@ -1,5 +1,5 @@
 /*!
- * Scrollbox v2.4.0
+ * Scrollbox v3.0.0-alpha
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -42,8 +42,8 @@
   -webkit-border-radius: 3px;
      -moz-border-radius: 3px;
           border-radius: 3px;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=3)";
   opacity: 0.03;
-  filter: alpha(opacity=3);
 }
 .scrollbox-bar {
   min-height: 20px;
