@@ -1188,7 +1188,7 @@
             moveFingerBy('mouse', {
                 x: horizontalBarOffset.left,
                 y: horizontalBarOffset.top
-            }, dragDelta, 100)
+            }, dragDelta, 100, null, 500)
                 .done(() => {
                     assert.horizontalScrollPositionIs(
                         $scrollbox,
@@ -1205,7 +1205,7 @@
                     moveFingerBy('mouse', {
                         x: horizontalBarOffset.left,
                         y: horizontalBarOffset.top
-                    }, dragDelta, 100)
+                    }, dragDelta, 100, null, 500)
                         .done(() => {
                             assert.horizontalScrollPositionIs(
                                 $scrollbox,
@@ -1242,7 +1242,7 @@
             moveFingerBy('mouse', {
                 x: verticalBarOffset.left,
                 y: verticalBarOffset.top
-            }, dragDelta, 100)
+            }, dragDelta, 100, null, 500)
                 .done(() => {
                     assert.verticalScrollPositionIs(
                         $scrollbox,
@@ -1259,7 +1259,7 @@
                     moveFingerBy('mouse', {
                         x: verticalBarOffset.left,
                         y: verticalBarOffset.top
-                    }, dragDelta, 100)
+                    }, dragDelta, 100, null, 500)
                         .done(() => {
                             assert.verticalScrollPositionIs(
                                 $scrollbox,
