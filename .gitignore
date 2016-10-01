@@ -3,4 +3,6 @@ nbproject
 node_modules
 bower_components
 tests/vendor/modernizr
+tests/visual/dist/
+tests/unit/dist/
 *.log

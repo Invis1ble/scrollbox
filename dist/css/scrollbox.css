@@ -19,25 +19,35 @@
 .scrollbox-bar {
   display: none;
   position: absolute;
+  z-index: 10;
+}
+.scrollbox-horizontal-rail,
+.scrollbox-horizontal-bar {
+  bottom: 0;
+  left: 0;
+}
+.scrollbox-vertical-rail,
+.scrollbox-vertical-bar {
   top: 0;
   right: 0;
-  z-index: 10;
 }
 .scrollbox-rail-in,
 .scrollbox-bar-in {
   display: block;
 }
-.scrollbox-rail {
-  height: 100%;
+.scrollbox-horizontal-bar {
+  -webkit-backface-visibility: hidden;
+     -moz-backface-visibility: hidden;
+          backface-visibility: hidden;
+  will-change: left;
 }
-.scrollbox-bar {
+.scrollbox-vertical-bar {
   -webkit-backface-visibility: hidden;
      -moz-backface-visibility: hidden;
           backface-visibility: hidden;
   will-change: top;
 }
 .scrollbox-rail {
-  width: 7px;
   background-color: #000;
   -webkit-border-radius: 3px;
      -moz-border-radius: 3px;
@@ -49,8 +59,6 @@
   opacity: 0.03;
 }
 .scrollbox-bar {
-  min-height: 20px;
-  width: 7px;
   background-color: #ccc;
   -webkit-border-radius: 3px;
      -moz-border-radius: 3px;
@@ -61,4 +69,18 @@
 }
 .scrollbox-bar.scrollbox-bar-captured {
   background-color: #666666;
+}
+.scrollbox-horizontal-rail {
+  height: 7px;
+}
+.scrollbox-vertical-rail {
+  width: 7px;
+}
+.scrollbox-horizontal-bar {
+  min-width: 20px;
+  height: 7px;
+}
+.scrollbox-vertical-bar {
+  min-height: 20px;
+  width: 7px;
 }

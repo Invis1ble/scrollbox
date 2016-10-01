@@ -1,15 +1,14 @@
-module.exports = function (grunt) {
+module.exports = (grunt) => {
     'use strict';
 
     require('load-grunt-tasks')(grunt);
 
-    var testBuildNumber;
+    let testBuildNumber;
     
     if (process.env.TRAVIS_JOB_ID) {
         testBuildNumber = "travis-" + process.env.TRAVIS_JOB_ID;
     } else {
-        var currentTime = new Date();
-        testBuildNumber = "manual-" + currentTime.getTime();
+        testBuildNumber = "manual-" + (new Date()).getTime();
     }
     
     grunt.initConfig({
@@ -17,19 +16,85 @@ module.exports = function (grunt) {
         clean: [
             'dist/*'
         ],
-        copy: {
+        babel: {
             options: {
-                nonull: true
+                presets: [
+                    ['es2015', { modules: false }]
+                ]
+            },
+            production: {
+                files: {
+                    'dist/js/scrollbox.js': 'src/js/scrollbox.js'
+                }
+            },
+            development: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    'dist/js/scrollbox.js': 'src/js/scrollbox.js'
+                }
+            },
+            visualTests: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    'tests/visual/dist/js/setup.js': 'tests/visual/src/js/setup.js'
+                }
+            },
+            unitTests: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    'tests/unit/dist/js/setup.js': 'tests/unit/src/js/setup.js',
+                    'tests/unit/dist/js/scrollbox.js': 'tests/unit/src/js/scrollbox.js'
+                }
+            }
+        },
+        uglify: {
+            options: {
+                preserveComments: /^!/,
+                sourceMap: true
             },
             dist: {
-                src: 'src/js/scrollbox.js',
-                dest: 'dist/js/<%= pkg.name %>.js'
+                files: {
+                    'dist/js/<%= pkg.name %>.min.js': 'dist/js/<%= pkg.name %>.js'
+                }
             }
         },
         less: {
-            dist: {
+            options: {
+                sourceMapRootpath: '/'
+            },
+            production: {
                 files: {
                     'dist/css/<%= pkg.name %>.css': 'src/less/scrollbox.less'
+                }
+            },
+            development: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    'dist/css/<%= pkg.name %>.css': 'src/less/scrollbox.less'
+                }
+            },
+            visualTests: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    'tests/visual/dist/css/styles.css': 'tests/visual/src/less/styles.less'
+                }
+            },
+            unitTests: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    'tests/unit/dist/css/styles.css': 'tests/unit/src/less/styles.less'
                 }
             }
         },
@@ -49,17 +114,6 @@ module.exports = function (grunt) {
             },
             dist: {
                 src: 'dist/css/*.css'
-            }
-        },
-        uglify: {
-            options: {
-                preserveComments: /^!/,
-                sourceMap: true
-            },
-            dist: {
-                files: {
-                    'dist/js/<%= pkg.name %>.min.js': 'dist/js/<%= pkg.name %>.js'
-                }
             }
         },
         cssmin: {
@@ -88,7 +142,33 @@ module.exports = function (grunt) {
             }
         },
         qunit: {
-            files: 'tests/index.html'
+            files: 'tests/unit/index.html'
+        },
+        watch: {
+            srcJs: {
+                files: 'src/js/scrollbox.js',
+                tasks: ['babel:development']
+            },
+            srcLess: {
+                files: 'src/less/**/*.less',
+                tasks: ['less:development']
+            },
+            visualTestsJs: {
+                files: 'tests/visual/src/js/setup.js',
+                tasks: ['babel:visualTests']
+            },
+            visualTestsLess: {
+                files: 'tests/visual/src/less/styles.less',
+                tasks: ['less:visualTests']
+            },
+            unitTestsJs: {
+                files: 'tests/unit/src/js/*.js',
+                tasks: ['babel:unitTests']
+            },
+            unitTestsLess: {
+                files: 'tests/unit/src/less/styles.less',
+                tasks: ['less:unitTests']
+            },
         },
         connect: {
             tests: {
@@ -116,27 +196,40 @@ module.exports = function (grunt) {
         'production'
     ]);
 
-    grunt.registerTask('production', [
-        'development',
-        'uglify',
-        'cssmin'
-    ]);
-
-    grunt.registerTask('development', [
-        'clean',
-        'copy',
-        'less',
-        'postcss',
+    grunt.registerTask('tests', [
+        'babel:visualTests',
+        'babel:unitTests',
+        'less:visualTests',
+        'less:unitTests',
         'modernizr',
         'qunit'
     ]);
 
-    var ciTasks = ['production'];
+    grunt.registerTask('production', [
+        'clean',
+        'babel:production',
+        'less:production',
+        'postcss',
+        'uglify',
+        'cssmin',
+        'tests'
+    ]);
+
+    grunt.registerTask('development', [
+        'clean',
+        'babel:development',
+        'less:development',
+        'tests'
+    ]);
+
+    let ciTasks = ['production'];
 
     // See https://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests
-    if (process.env.TRAVIS_PULL_REQUEST === 'false') {
-        ciTasks.push('connect');
-        ciTasks.push('saucelabs-qunit');
+    if ('false' === process.env.TRAVIS_PULL_REQUEST) {
+        ciTasks.push(
+            'connect',
+            'saucelabs-qunit'
+        );
     }
 
     grunt.registerTask('ci', ciTasks);
