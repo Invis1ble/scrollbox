@@ -1,34 +1,43 @@
-(function (QUnit, $) {
+((QUnit, $) => {
+    'use strict';
+
     QUnit.config.requireExpects = true;
-    QUnit.config.testTimeout = 20000;
+    QUnit.config.testTimeout = 10000;
 
     // Display fixture on-screen to avoid false positives
-    QUnit.begin(function () {
+    QUnit.begin(() => {
         $('#qunit-fixture').css({
             top: 0,
             left: 0
         });
     });
 
-    QUnit.done(function () {
+    QUnit.done(() => {
         $('#qunit-fixture').css({
             top: '',
             left: ''
         });
     });
 
-    QUnit.testDone(function () {
-        $('#qunit-fixture').empty();
+    QUnit.testDone(() => {
+        const $fixture = $('#qunit-fixture');
+        const $scrollbox = $('#scrollbox-container', $fixture);
+
+        if (undefined !== $scrollbox.data('scrollbox')) {
+            $scrollbox.scrollbox('destroy');
+        }
+
+        $fixture.empty();
     });
 
-    var log = [];
-    var testName;
+    let log = [];
 
-    QUnit.done(function (test_results) {
-        var tests = [];
+    QUnit.done((results) => {
+        let tests = [];
 
-        for (var i = 0, len = log.length; i < len; i ++) {
-            var details = log[i];
+        for (let i = 0, len = log.length; i < len; i ++) {
+            let details = log[i];
+
             tests.push({
                 name: details.name,
                 result: details.result,
@@ -38,12 +47,13 @@
             });
         }
 
-        test_results.tests = tests;
+        results.tests = tests;
 
-        window.global_test_results = test_results;
+        window.global_test_results = results;
     });
-    QUnit.testStart(function (testDetails) {
-        QUnit.log(function (details) {
+
+    QUnit.testStart((testDetails) => {
+        QUnit.log((details) => {
             if (!details.result) {
                 details.name = testDetails.name;
                 log.push(details);
