@@ -101,8 +101,6 @@ const Scrollbox = (($) => {
 
             this._swipeStartedAt = null;
 
-            this._syncCurrentPosition();
-
             this._hasCommonListeners = false;
 
             this._init();
@@ -199,7 +197,6 @@ const Scrollbox = (($) => {
             }
 
             if (undefined === animationOptions) {
-                this._isCorrectionRequired = true;
                 this._$element.scrollLeft(computedDestinationX);
                 this._$element.scrollTop(computedDestinationY);
                 this._currentPosition = {
@@ -277,7 +274,7 @@ const Scrollbox = (($) => {
             this._elementOuterWidth = null;
             this._elementOuterHeight = null;
             this._maxScrollLeft = null;
-            this._maxScrollTop = null
+            this._maxScrollTop = null;
         }
 
         _init() {
@@ -290,6 +287,7 @@ const Scrollbox = (($) => {
                 .append(this._$verticalRail)
                 .append(this._$verticalBar);
 
+            this._syncCurrentPosition();
             this._sync();
 
             this.scrollTo(this._config.startAt.x, this._config.startAt.y);

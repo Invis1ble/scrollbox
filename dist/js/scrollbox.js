@@ -106,8 +106,6 @@ var Scrollbox = function ($) {
 
             this._swipeStartedAt = null;
 
-            this._syncCurrentPosition();
-
             this._hasCommonListeners = false;
 
             this._init();
@@ -205,7 +203,6 @@ var Scrollbox = function ($) {
                 }
 
                 if (undefined === animationOptions) {
-                    this._isCorrectionRequired = true;
                     this._$element.scrollLeft(computedDestinationX);
                     this._$element.scrollTop(computedDestinationY);
                     this._currentPosition = {
@@ -283,6 +280,7 @@ var Scrollbox = function ($) {
             value: function _init() {
                 this._$wrapper = this._$element.addClass(ClassName.OVERFLOWED).wrap(this._config.templates.wrapper).parent().addClass(ClassName.WRAPPER).append(this._$horizontalRail).append(this._$horizontalBar).append(this._$verticalRail).append(this._$verticalBar);
 
+                this._syncCurrentPosition();
                 this._sync();
 
                 this.scrollTo(this._config.startAt.x, this._config.startAt.y);

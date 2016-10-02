@@ -30,7 +30,7 @@
         return $('.scrollbox-vertical-rail', getWrapper(scrollbox));
     };
 
-    const moveFingerBy = (type, options, by, delay, timing, timeout) => {
+    const dragAndDropVia = (type, from, delta, duration, timing, timeout) => {
         const deferred = $.Deferred();
 
         if (undefined === timing || null === timing) {
@@ -42,12 +42,63 @@
         }
 
         (new Hand({ timing: timing }))
-            .growFinger(type, options)
+            .growFinger(type, {x: from.x, y: from.y})
             .down()
-            .moveBy(by.x, by.y, delay)
+            .moveBy(delta.x, delta.y, duration)
+            .wait(200)
             .up();
 
-        window.setTimeout(deferred.resolve, delay + timeout);
+        setTimeout(deferred.resolve, duration + 200 + timeout);
+
+        return deferred;
+    };
+
+    const dragAndDropViaTouch = (from, delta, duration, timing, timeout) => {
+        return dragAndDropVia('touch', from, delta, duration, timing, timeout);
+    };
+
+    const dragAndDropViaMouse = (from, delta, duration, timing, timeout) => {
+        /**
+         * TODO: Uncomment.
+         * See: https://github.com/Leaflet/prosthetic-hand/issues/4,
+         * https://github.com/Leaflet/prosthetic-hand/issues/8
+         */
+        // return dragAndDropVia('mouse', from, delta, duration, timing, timeout);
+
+        const deferred = $.Deferred();
+        const $document = $(document);
+
+        if (undefined === duration) {
+            duration = 100;
+        }
+
+        if (undefined === timeout) {
+            timeout = 100;
+        }
+
+        $(document.elementFromPoint(from.x, from.y))
+            .trigger($.Event('mousedown', {
+                which: 1,
+                pageX: from.x,
+                pageY: from.y
+            }));
+
+        setTimeout(() => {
+            $document
+                .trigger($.Event('mousemove', {
+                    pageX: from.x + delta.x,
+                    pageY: from.y + delta.y
+                }));
+
+            setTimeout(() => {
+                $document
+                    .trigger($.Event('mouseup', {
+                        which: 1
+                    }));
+
+                setTimeout(deferred.resolve, timeout);
+            }, duration);
+        }, 200);
 
         return deferred;
     };
@@ -104,18 +155,20 @@
 
             const HORIZONTAL_BAR_ACTUAL_WIDTH = $horizontalBar.outerWidth();
             const HORIZONTAL_BAR_EXPECTED_WIDTH = Math.max(
-                Math.round(CONTAINER_WIDTH / $content.outerWidth() * CONTAINER_WIDTH),
+                CONTAINER_WIDTH / $content.outerWidth() * CONTAINER_WIDTH,
                 parseInt($horizontalBar.css('min-width'), 10)
             );
             const VERTICAL_BAR_ACTUAL_HEIGHT = $verticalBar.outerHeight();
             const VERTICAL_BAR_EXPECTED_HEIGHT = Math.max(
-                Math.round(CONTAINER_HEIGHT / $content.outerHeight() * CONTAINER_HEIGHT),
+                CONTAINER_HEIGHT / $content.outerHeight() * CONTAINER_HEIGHT,
                 parseInt($verticalBar.css('min-height'), 10)
             );
 
+            const LEGAL_DELTA = 1;
+
             this.push(
-                HORIZONTAL_BAR_ACTUAL_WIDTH === HORIZONTAL_BAR_EXPECTED_WIDTH &&
-                VERTICAL_BAR_ACTUAL_HEIGHT === VERTICAL_BAR_EXPECTED_HEIGHT,
+                Math.abs(HORIZONTAL_BAR_ACTUAL_WIDTH - HORIZONTAL_BAR_EXPECTED_WIDTH) <= LEGAL_DELTA &&
+                Math.abs(VERTICAL_BAR_ACTUAL_HEIGHT - VERTICAL_BAR_EXPECTED_HEIGHT) <= LEGAL_DELTA,
                 `horizontal bar width: ${HORIZONTAL_BAR_ACTUAL_WIDTH}, ` +
                 `vertical bar height: ${VERTICAL_BAR_ACTUAL_HEIGHT}`,
                 `horizontal bar width: ${HORIZONTAL_BAR_EXPECTED_WIDTH}, ` +
@@ -127,18 +180,18 @@
         barsHaveProperPosition: function (scrollbox, message) {
             const $scrollbox = $(scrollbox);
 
-            const HORIZONTAL_BAR_ACTUAL_POSITION_LEFT = Math.round(getHorizontalBar(scrollbox).position().left);
-            const HORIZONTAL_BAR_EXPECTED_POSITION_LEFT = Math.round(
-                $scrollbox.scrollLeft() / $scrollbox[0].scrollWidth * $scrollbox.outerWidth()
-            );
-            const VERTICAL_BAR_ACTUAL_POSITION_TOP = Math.round(getVerticalBar(scrollbox).position().top);
-            const VERTICAL_BAR_EXPECTED_POSITION_TOP = Math.round(
-                $scrollbox.scrollTop() / $scrollbox[0].scrollHeight * $scrollbox.outerHeight()
-            );
+            const HORIZONTAL_BAR_ACTUAL_POSITION_LEFT = getHorizontalBar(scrollbox).position().left;
+            const HORIZONTAL_BAR_EXPECTED_POSITION_LEFT = $scrollbox.scrollLeft() /
+                $scrollbox[0].scrollWidth * $scrollbox.outerWidth();
+            const VERTICAL_BAR_ACTUAL_POSITION_TOP = getVerticalBar(scrollbox).position().top;
+            const VERTICAL_BAR_EXPECTED_POSITION_TOP = $scrollbox.scrollTop() /
+                $scrollbox[0].scrollHeight * $scrollbox.outerHeight();
+
+            const LEGAL_DELTA = 1;
 
             this.push(
-                HORIZONTAL_BAR_ACTUAL_POSITION_LEFT === HORIZONTAL_BAR_EXPECTED_POSITION_LEFT &&
-                VERTICAL_BAR_ACTUAL_POSITION_TOP === VERTICAL_BAR_EXPECTED_POSITION_TOP,
+                Math.abs(HORIZONTAL_BAR_ACTUAL_POSITION_LEFT - HORIZONTAL_BAR_EXPECTED_POSITION_LEFT) <= LEGAL_DELTA &&
+                Math.abs(VERTICAL_BAR_ACTUAL_POSITION_TOP - VERTICAL_BAR_EXPECTED_POSITION_TOP) <= LEGAL_DELTA,
                 `horizontal bar position left: ${HORIZONTAL_BAR_ACTUAL_POSITION_LEFT}, ` +
                 `vertical bar position top: ${VERTICAL_BAR_ACTUAL_POSITION_TOP}`,
                 `horizontal bar position left: ${HORIZONTAL_BAR_EXPECTED_POSITION_LEFT}, ` +
@@ -975,7 +1028,7 @@
 
         QUnit.module('Scrollbox GUI interaction');
 
-        QUnit.test('should change bars state on capture/release by mouse', (assert) => {
+        QUnit.test('should change bars state on capture/release via mouse', (assert) => {
             assert.expect(4);
             const done = assert.async(4);
 
@@ -1029,7 +1082,7 @@
         });
 
         if (Modernizr.touchevents) {
-            QUnit.test('should change bars state on capture/release by touch', (assert) => {
+            QUnit.test('should change bars state on capture/release via touch', (assert) => {
                 assert.expect(4);
                 const done = assert.async(4);
 
@@ -1163,7 +1216,7 @@
             }, 100);
         });
 
-        QUnit.test('should scroll by the certain distance on drag horizontal bar by mouse', (assert) => {
+        QUnit.test('should scroll by the certain distance on drag horizontal bar via mouse', (assert) => {
             assert.expect(2);
             const done = assert.async(2);
 
@@ -1185,10 +1238,10 @@
             let scrollLeft = $scrollbox.scrollLeft();
             let expectedDistanceX = dragDelta.x / WIDTH_RATIO;
 
-            moveFingerBy('mouse', {
+            dragAndDropViaMouse({
                 x: horizontalBarOffset.left,
                 y: horizontalBarOffset.top
-            }, dragDelta, 100, null, 500)
+            }, dragDelta, 100)
                 .done(() => {
                     assert.horizontalScrollPositionIs(
                         $scrollbox,
@@ -1202,10 +1255,10 @@
                     scrollLeft = $scrollbox.scrollLeft();
                     expectedDistanceX = dragDelta.x / WIDTH_RATIO;
 
-                    moveFingerBy('mouse', {
+                    dragAndDropViaMouse({
                         x: horizontalBarOffset.left,
                         y: horizontalBarOffset.top
-                    }, dragDelta, 100, null, 500)
+                    }, dragDelta, 100)
                         .done(() => {
                             assert.horizontalScrollPositionIs(
                                 $scrollbox,
@@ -1217,7 +1270,7 @@
                 });
         });
 
-        QUnit.test('should scroll by the certain distance on drag vertical bar by mouse', (assert) => {
+        QUnit.test('should scroll by the certain distance on drag vertical bar via mouse', (assert) => {
             assert.expect(2);
             const done = assert.async(2);
 
@@ -1239,10 +1292,10 @@
             let scrollTop = $scrollbox.scrollTop();
             let expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
 
-            moveFingerBy('mouse', {
+            dragAndDropViaMouse({
                 x: verticalBarOffset.left,
                 y: verticalBarOffset.top
-            }, dragDelta, 100, null, 500)
+            }, dragDelta, 100)
                 .done(() => {
                     assert.verticalScrollPositionIs(
                         $scrollbox,
@@ -1256,10 +1309,10 @@
                     scrollTop = $scrollbox.scrollTop();
                     expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
 
-                    moveFingerBy('mouse', {
+                    dragAndDropViaMouse({
                         x: verticalBarOffset.left,
                         y: verticalBarOffset.top
-                    }, dragDelta, 100, null, 500)
+                    }, dragDelta, 100)
                         .done(() => {
                             assert.verticalScrollPositionIs(
                                 $scrollbox,
@@ -1272,7 +1325,7 @@
         });
 
         if (Modernizr.touchevents) {
-            QUnit.test('should scroll by the certain distance on drag horizontal bar by touch', (assert) => {
+            QUnit.test('should scroll by the certain distance on drag horizontal bar via touch', (assert) => {
                 assert.expect(2);
                 const done = assert.async(2);
 
@@ -1294,7 +1347,7 @@
                 let scrollLeft = $scrollbox.scrollLeft();
                 let expectedDistanceX = dragDelta.x / WIDTH_RATIO;
 
-                moveFingerBy('touch', {
+                dragAndDropViaTouch({
                     x: horizontalBarOffset.left,
                     y: horizontalBarOffset.top
                 }, dragDelta, 100)
@@ -1311,8 +1364,8 @@
                         scrollLeft = $scrollbox.scrollLeft();
                         expectedDistanceX = dragDelta.x / WIDTH_RATIO;
 
-                        moveFingerBy('mouse', {
-                            x: horizontalBarOffset.left,
+                        dragAndDropViaTouch({
+                            x: horizontalBarOffset.left + $horizontalBar.outerWidth() - 1,
                             y: horizontalBarOffset.top
                         }, dragDelta, 100)
                             .done(() => {
@@ -1326,7 +1379,7 @@
                     });
             });
 
-            QUnit.test('should scroll by the certain distance on drag vertical bar by touch', (assert) => {
+            QUnit.test('should scroll by the certain distance on drag vertical bar via touch', (assert) => {
                 assert.expect(2);
                 const done = assert.async(2);
 
@@ -1348,7 +1401,7 @@
                 let scrollTop = $scrollbox.scrollTop();
                 let expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
 
-                moveFingerBy('touch', {
+                dragAndDropViaTouch({
                     x: verticalBarOffset.left,
                     y: verticalBarOffset.top
                 }, dragDelta, 100)
@@ -1365,9 +1418,9 @@
                         scrollTop = $scrollbox.scrollTop();
                         expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
 
-                        moveFingerBy('mouse', {
+                        dragAndDropViaTouch({
                             x: verticalBarOffset.left,
-                            y: verticalBarOffset.top
+                            y: verticalBarOffset.top + $verticalBar.outerHeight() - 1
                         }, dragDelta, 100)
                             .done(() => {
                                 assert.verticalScrollPositionIs(
@@ -1400,6 +1453,10 @@
                 };
 
                 let dragDelta = {
+                    /**
+                     * TODO: Uncomment.
+                     * See: https://github.com/Leaflet/prosthetic-hand/issues/12
+                     */
                     // x: -Math.round(CONTAINER_WIDTH * .75),
                     // y: -Math.round(CONTAINER_HEIGHT * .75)
                     x: -Math.round(CONTAINER_WIDTH * .45),
@@ -1426,7 +1483,7 @@
                 let scrollLeft = $scrollbox.scrollLeft();
                 let scrollTop = $scrollbox.scrollTop();
 
-                moveFingerBy('touch', {
+                dragAndDropViaTouch({
                     x: containerCenter.x + wrapperOffset.left,
                     y: containerCenter.y + wrapperOffset.top
                 }, dragDelta, MOMENTUM_THRESHOLD_TIME + 100)
@@ -1439,6 +1496,10 @@
                         done();
 
                         dragDelta = {
+                            /**
+                             * TODO: Uncomment.
+                             * See: https://github.com/Leaflet/prosthetic-hand/issues/12
+                             */
                             // x: Math.round(CONTAINER_WIDTH * .6),
                             // y: Math.round(CONTAINER_HEIGHT * .6)
                             x: Math.round(CONTAINER_WIDTH * .3),
@@ -1448,7 +1509,7 @@
                         scrollLeft = $scrollbox.scrollLeft();
                         scrollTop = $scrollbox.scrollTop();
 
-                        moveFingerBy('touch', {
+                        dragAndDropViaTouch({
                             x: containerCenter.x + wrapperOffset.left,
                             y: containerCenter.y + wrapperOffset.top
                         }, dragDelta, MOMENTUM_THRESHOLD_TIME + 100)
@@ -1481,6 +1542,10 @@
                 };
 
                 let dragDelta = {
+                    /**
+                     * TODO: Uncomment.
+                     * See: https://github.com/Leaflet/prosthetic-hand/issues/12
+                     */
                     // x: -Math.round(CONTAINER_WIDTH * .75),
                     // y: -Math.round(CONTAINER_HEIGHT * .75)
                     x: -Math.round(CONTAINER_WIDTH * .45),
@@ -1507,7 +1572,7 @@
                 let scrollLeft = $scrollbox.scrollLeft();
                 let scrollTop = $scrollbox.scrollTop();
 
-                moveFingerBy('touch', {
+                dragAndDropViaTouch({
                     x: containerCenter.x + wrapperOffset.left,
                     y: containerCenter.y + wrapperOffset.top
                 }, dragDelta, 100, null, 500)
@@ -1532,6 +1597,10 @@
                         done();
 
                         dragDelta = {
+                            /**
+                             * TODO: Uncomment.
+                             * See: https://github.com/Leaflet/prosthetic-hand/issues/12
+                             */
                             // x: Math.round(CONTAINER_WIDTH * .6),
                             // y: Math.round(CONTAINER_HEIGHT * .6)
                             x: Math.round(CONTAINER_WIDTH * .3),
@@ -1541,7 +1610,7 @@
                         scrollLeft = $scrollbox.scrollLeft();
                         scrollTop = $scrollbox.scrollTop();
 
-                        moveFingerBy('touch', {
+                        dragAndDropViaTouch({
                             x: containerCenter.x + wrapperOffset.left,
                             y: containerCenter.y + wrapperOffset.top
                         }, dragDelta, 100, null, 500)
