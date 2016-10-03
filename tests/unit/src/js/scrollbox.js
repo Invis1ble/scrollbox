@@ -57,7 +57,7 @@
         return dragAndDropVia('touch', from, delta, duration, timing, timeout);
     };
 
-    const dragAndDropViaMouse = (from, delta, duration, timing, timeout) => {
+    const dragAndDropViaMouse = (element, from, delta, duration, timing, timeout) => {
         /**
          * TODO: Uncomment.
          * See: https://github.com/Leaflet/prosthetic-hand/issues/4,
@@ -76,7 +76,7 @@
             timeout = 100;
         }
 
-        $(document.elementFromPoint(from.x, from.y))
+        $(element)
             .trigger($.Event('mousedown', {
                 which: 1,
                 pageX: from.x,
@@ -1238,7 +1238,7 @@
             let scrollLeft = $scrollbox.scrollLeft();
             let expectedDistanceX = dragDelta.x / WIDTH_RATIO;
 
-            dragAndDropViaMouse({
+            dragAndDropViaMouse($horizontalBar, {
                 x: horizontalBarOffset.left,
                 y: horizontalBarOffset.top
             }, dragDelta, 100)
@@ -1255,7 +1255,7 @@
                     scrollLeft = $scrollbox.scrollLeft();
                     expectedDistanceX = dragDelta.x / WIDTH_RATIO;
 
-                    dragAndDropViaMouse({
+                    dragAndDropViaMouse($horizontalBar, {
                         x: horizontalBarOffset.left,
                         y: horizontalBarOffset.top
                     }, dragDelta, 100)
@@ -1292,7 +1292,7 @@
             let scrollTop = $scrollbox.scrollTop();
             let expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
 
-            dragAndDropViaMouse({
+            dragAndDropViaMouse($verticalBar, {
                 x: verticalBarOffset.left,
                 y: verticalBarOffset.top
             }, dragDelta, 100)
@@ -1309,7 +1309,7 @@
                     scrollTop = $scrollbox.scrollTop();
                     expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
 
-                    dragAndDropViaMouse({
+                    dragAndDropViaMouse($verticalBar, {
                         x: verticalBarOffset.left,
                         y: verticalBarOffset.top
                     }, dragDelta, 100)
