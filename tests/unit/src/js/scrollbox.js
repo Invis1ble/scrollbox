@@ -97,7 +97,9 @@
                     }));
 
                 setTimeout(deferred.resolve, timeout);
-            }, duration);
+            // }, duration);
+            // Old Safari bug workaround (too many "mousemove" events)
+            }, 0);
         }, 200);
 
         return deferred;
