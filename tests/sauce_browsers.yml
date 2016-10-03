@@ -87,15 +87,7 @@
 #    },
     {
         browserName: 'safari',
-        platform: 'Windows 7',
-        screenResolution: '2560x1600'
-    },
-    {
-        platform: "Linux",
-        browserName: "android",
-        deviceName: "Android Emulator",
-        version: "latest",
-        deviceType: "phone"
+        platform: 'Windows 7'
     }
 #    ,
 #    {
@@ -188,5 +180,12 @@
 #        browserName: 'opera',
 #        version: '12',
 #        platform: 'Linux'
+#    },
+#    {
+#        browserName: "android",
+#        version: "latest",
+#        deviceType: "phone",
+#        deviceName: "Android Emulator",
+#        platform: "Linux"
 #    }
 ]
