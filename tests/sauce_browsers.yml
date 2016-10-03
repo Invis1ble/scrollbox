@@ -1,191 +1,190 @@
 [
-#    # Windows 10
-#    {
-#        browserName: 'chrome',
-#        platform: 'Windows 10'
-#    },
-#    {
-#        browserName: 'chrome',
-#        version: '26',
-#        platform: 'Windows 10'
-#    },
-#    {
-#        browserName: 'firefox',
-#        platform: 'Windows 10'
-#    },
-#    {
-#        browserName: 'firefox',
-#        version: '6',
-#        platform: 'Windows 10'
-#    },
-#    {
-#        browserName: 'internet explorer',
-#        platform: 'Windows 10'
-#    },
-#    {
-#        browserName: 'MicrosoftEdge',
-#        platform: 'Windows 10'
-#    },
-#
-#    # Windows 8.1
-#    {
-#        browserName: 'chrome',
-#        platform: 'Windows 8.1'
-#    },
-#    {
-#        browserName: 'chrome',
-#        version: '26',
-#        platform: 'Windows 8.1'
-#    },
-#    {
-#        browserName: 'firefox',
-#        platform: 'Windows 8.1'
-#    },
-#    {
-#        browserName: 'firefox',
-#        version: '6',
-#        platform: 'Windows 8.1'
-#    },
-#    {
-#        browserName: 'internet explorer',
-#        platform: 'Windows 8.1'
-#    },
-#
-#    # Windows 7
-#    {
-#        browserName: 'chrome',
-#        platform: 'Windows 7'
-#    },
-#    {
-#        browserName: 'chrome',
-#        version: '26',
-#        platform: 'Windows 7'
-#    },
-#    {
-#        browserName: 'firefox',
-#        platform: 'Windows 7'
-#    },
-#    {
-#        browserName: 'firefox',
-#        version: '6',
-#        platform: 'Windows 7'
-#    },
-#    {
-#        browserName: 'internet explorer',
-#        version: '9',
-#        platform: 'Windows 7'
-#    },
-#    {
-#        browserName: 'internet explorer',
-#        version: '10',
-#        platform: 'Windows 7'
-#    },
-#    {
-#        browserName: 'internet explorer',
-#        version: '11',
-#        platform: 'Windows 7'
-#    },
+    # Windows 10
+    {
+        browserName: 'chrome',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'firefox',
+        version: '6',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'internet explorer',
+        platform: 'Windows 10'
+    },
+    {
+        browserName: 'MicrosoftEdge',
+        platform: 'Windows 10'
+    },
+
+    # Windows 8.1
+    {
+        browserName: 'chrome',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'firefox',
+        version: '6',
+        platform: 'Windows 8.1'
+    },
+    {
+        browserName: 'internet explorer',
+        platform: 'Windows 8.1'
+    },
+
+    # Windows 7
+    {
+        browserName: 'chrome',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'firefox',
+        version: '6',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'internet explorer',
+        version: '9',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'internet explorer',
+        version: '10',
+        platform: 'Windows 7'
+    },
+    {
+        browserName: 'internet explorer',
+        version: '11',
+        platform: 'Windows 7'
+    },
     {
         browserName: 'safari',
         platform: 'Windows 7'
+    },
+    {
+        browserName: 'opera',
+        platform: 'Windows 7'
+    },
+
+    # Windows XP
+    {
+        browserName: 'chrome',
+        platform: 'Windows XP'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Windows XP'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Windows XP'
+    },
+    {
+        browserName: 'firefox',
+        version: '6',
+        platform: 'Windows XP'
+    },
+    {
+        browserName: 'opera',
+        platform: 'Windows XP'
+    },
+    {
+        browserName: 'opera',
+        version: '11',
+        platform: 'Windows XP'
+    },
+
+    # OS X 10.11
+    {
+        browserName: 'safari',
+        platform: 'OS X 10.11'
+    },
+    {
+        browserName: 'chrome',
+        platform: 'OS X 10.11'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'OS X 10.11'
+    },
+
+    # OS X 10.10
+    {
+        browserName: 'safari',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: 'chrome',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: "iphone",
+        version: "9.2",
+        platform: "OS X 10.10"
+    },
+
+    # Linux
+    {
+        browserName: 'chrome',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '6',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'opera',
+        version: '12',
+        platform: 'Linux'
+    },
+    {
+        browserName: "android",
+        version: "latest",
+        deviceType: "phone",
+        deviceName: "Android Emulator",
+        platform: "Linux"
     }
-#    ,
-#    {
-#        browserName: 'opera',
-#        platform: 'Windows 7'
-#    },
-#
-#    # Windows XP
-#    {
-#        browserName: 'chrome',
-#        platform: 'Windows XP'
-#    },
-#    {
-#        browserName: 'chrome',
-#        version: '26',
-#        platform: 'Windows XP'
-#    },
-#    {
-#        browserName: 'firefox',
-#        platform: 'Windows XP'
-#    },
-#    {
-#        browserName: 'firefox',
-#        version: '6',
-#        platform: 'Windows XP'
-#    },
-#    {
-#        browserName: 'opera',
-#        platform: 'Windows XP'
-#    },
-#    {
-#        browserName: 'opera',
-#        version: '11',
-#        platform: 'Windows XP'
-#    },
-#
-#    # OS X 10.11
-#    {
-#        browserName: 'safari',
-#        platform: 'OS X 10.11'
-#    },
-#    {
-#        browserName: 'chrome',
-#        platform: 'OS X 10.11'
-#    },
-#    {
-#        browserName: 'firefox',
-#        platform: 'OS X 10.11'
-#    },
-#
-#    # OS X 10.10
-#    {
-#        browserName: 'safari',
-#        platform: 'OS X 10.10'
-#    },
-#    {
-#        browserName: 'chrome',
-#        platform: 'OS X 10.10'
-#    },
-#    {
-#        browserName: 'firefox',
-#        platform: 'OS X 10.10'
-#    },
-#    {
-#        browserName: "iphone",
-#        version: "9.2",
-#        platform: "OS X 10.10"
-#    },
-#
-#    # Linux
-#    {
-#        browserName: 'chrome',
-#        platform: 'Linux'
-#    },
-#    {
-#        browserName: 'chrome',
-#        version: '26',
-#        platform: 'Linux'
-#    },
-#    {
-#        browserName: 'firefox',
-#        platform: 'Linux'
-#    },
-#    {
-#        browserName: 'firefox',
-#        version: '6',
-#        platform: 'Linux'
-#    },
-#    {
-#        browserName: 'opera',
-#        version: '12',
-#        platform: 'Linux'
-#    },
-#    {
-#        browserName: "android",
-#        version: "latest",
-#        deviceType: "phone",
-#        deviceName: "Android Emulator",
-#        platform: "Linux"
-#    }
 ]
