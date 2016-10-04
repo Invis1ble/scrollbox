@@ -55,10 +55,16 @@ module.exports = (grunt) => {
         },
         uglify: {
             options: {
-                preserveComments: /^!/,
                 sourceMap: true
             },
             dist: {
+                options: {
+                    banner: `/*!
+ * Scrollbox v<%= pkg.version %>
+ * (c) 2013-2016, <%= pkg.author %>
+ * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
+ */`
+                },
                 files: {
                     'dist/js/<%= pkg.name %>.min.js': 'dist/js/<%= pkg.name %>.js'
                 }
