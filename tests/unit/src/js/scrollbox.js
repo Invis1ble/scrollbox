@@ -234,6 +234,18 @@
                 isCaptured,
                 undefined !== message ? message : `bar is ${isCaptured ? 'captured' : 'released'}`
             );
+        },
+
+        elementHasEvent: function (element, event, hasEvent, message) {
+            const events = $._data(element, 'events');
+            const HAS_EVENT = undefined !== events && undefined !== events[event];
+
+            this.push(
+                HAS_EVENT === hasEvent,
+                HAS_EVENT,
+                hasEvent,
+                undefined !== message ? message : `element has ${hasEvent ? '' : 'not'} event "${event}"`
+            );
         }
     });
 
@@ -514,7 +526,7 @@
         });
 
         QUnit.test('should completely remove all stuff on "destroy"', (assert) => {
-            assert.expect(7);
+            assert.expect(13);
 
             const $scrollbox = createScrollbox(40, 150, 40, 150)
                 ._scrollbox()
@@ -527,6 +539,15 @@
             assert.ok(getVerticalBar($scrollbox).length === 0, 'vertical bar was removed from DOM');
             assert.notOk(getWrapper($scrollbox).hasClass('scrollbox-wrapper'), 'wrapper was removed from DOM');
             assert.notOk($scrollbox.hasClass('scrollbox-overflowed'), 'overflow restored');
+
+            const scrollbox = $scrollbox[0];
+
+            assert.elementHasEvent(scrollbox, 'scroll', false);
+            assert.elementHasEvent(scrollbox, 'touchstart', false);
+            assert.elementHasEvent(scrollbox, 'touchmove', false);
+            assert.elementHasEvent(scrollbox, 'touchend', false);
+            assert.elementHasEvent(document, 'mousemove', false);
+            assert.elementHasEvent(document, 'mouseup', false);
         });
 
         QUnit.test('should fire "reachleft" event', (assert) => {
