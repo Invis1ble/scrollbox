@@ -1,6 +1,6 @@
 # Scrollbox
 
-[![Build Status](https://travis-ci.org/Invis1ble/scrollbox.svg?branch=develop)](https://travis-ci.org/Invis1ble/scrollbox)
+[![Build Status](https://travis-ci.org/Invis1ble/scrollbox.svg?branch=master)](https://travis-ci.org/Invis1ble/scrollbox)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.
