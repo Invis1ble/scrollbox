@@ -1,26 +1,43 @@
 .scrollbox-wrapper {
     position: relative;
-    overflow: hidden;
+
+    .scrollbox-overflowed {
+        overflow: hidden;
+    }
 
     > :first-child {
         will-change: scroll-position;
     }
 }
+
 .scrollbox-rail,
 .scrollbox-bar {
     display: none;
     position: absolute;
-    top: 0;
-    right: 0;
     z-index: 10;
 }
+
+.scrollbox-horizontal-rail,
+.scrollbox-horizontal-bar {
+    bottom: 0;
+    left: 0;
+}
+
+.scrollbox-vertical-rail,
+.scrollbox-vertical-bar {
+    top: 0;
+    right: 0;
+}
+
 .scrollbox-rail-in,
 .scrollbox-bar-in {
     display: block;
 }
-.scrollbox-rail {
-    height: 100%;
+
+.scrollbox-horizontal-bar {
+    will-change: left;
 }
-.scrollbox-bar {
+
+.scrollbox-vertical-bar {
     will-change: top;
 }

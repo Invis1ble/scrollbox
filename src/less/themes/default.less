@@ -1,24 +1,22 @@
-@rail-width: 7px;
-@rail-border-radius: floor(@rail-width / 2);
+@rail-thickness: 7px;
+@rail-border-radius: floor(@rail-thickness / 2);
 @rail-background-color: #000;
 @rail-opacity: .03;
 
-@bar-min-height: 20px;
-@bar-width: @rail-width;
+@bar-min-length: 20px;
+@bar-thickness: @rail-thickness;
 @bar-border-radius: @rail-border-radius;
 @bar-background-color: #ccc;
 @bar-hovered-background-color: darken(@bar-background-color, 20%);
 @bar-captured-background-color: darken(@bar-background-color, 40%);
 
 .scrollbox-rail {
-    width: @rail-width;
     background-color: @rail-background-color;
     border-radius: @rail-border-radius;
     opacity: @rail-opacity;
 }
+
 .scrollbox-bar {
-    min-height: @bar-min-height;
-    width: @bar-width;
     background-color: @bar-background-color;
     border-radius: @bar-border-radius;
 
@@ -29,4 +27,22 @@
     &.scrollbox-bar-captured {
         background-color: @bar-captured-background-color;
     }
+}
+
+.scrollbox-horizontal-rail {
+    height: @rail-thickness;
+}
+
+.scrollbox-vertical-rail {
+    width: @rail-thickness;
+}
+
+.scrollbox-horizontal-bar {
+    min-width: @bar-min-length;
+    height: @bar-thickness;
+}
+
+.scrollbox-vertical-bar {
+    min-height: @bar-min-length;
+    width: @bar-thickness;
 }
