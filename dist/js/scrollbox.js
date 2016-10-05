@@ -7,7 +7,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /*!
- * Scrollbox v3.0.0-beta
+ * Scrollbox v3.0.0-beta.1
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -15,7 +15,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Scrollbox = function ($) {
 
     var NAME = 'scrollbox';
-    var VERSION = '3.0.0-beta';
+    var VERSION = '3.0.0-beta.1';
     var DATA_KEY = NAME;
     var JQUERY_NO_CONFLICT = $.fn[NAME];
 
