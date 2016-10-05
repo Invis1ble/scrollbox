@@ -219,7 +219,7 @@ $('#long-content-container').scrollbox('scrollTo', 100, 200);
 If you want to scroll only on y-axis you can pass `undefined` as `x` value:
 
 ```js
-$('#long-content-container').scrollbox('scrollBy', undefined, 'bottom');
+$('#long-content-container').scrollbox('scrollTo', undefined, 'bottom');
 ```
 
 #### .destroy()
