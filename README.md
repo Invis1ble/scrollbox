@@ -16,7 +16,7 @@ A lightweight jQuery custom scrollbar plugin, that triggers event when reached t
 * Chrome
 * Chrome for Android
 
-... and others
+... and others.
 
 Scrollbox is automatically tested on the following browsers
 
@@ -165,26 +165,6 @@ Threshold time in milliseconds for detect inertial moving at swipe.
 
 Normally you don't need to change this templates, but you can if you want.
 
-### Events
-
-Scrollbox triggers a several events during lifecycle.
-
-#### reachleft.scrollbox
-
-Triggered when scrolling reach the left boundary of the content. Respects `distanceToReach.x` option.
-
-#### reachright.scrollbox
-
-Triggered when scrolling reach the right boundary of the content. Respects `distanceToReach.x` option.
-
-#### reachtop.scrollbox
-
-Triggered when scrolling reach the top boundary of the content. Respects `distanceToReach.y` option.
-
-#### reachbottom.scrollbox
-
-Triggered when scrolling reach the bottom boundary of the content. Respects `distanceToReach.y` option.
-
 ### Methods
 
 You can call some methods of the plugin.
@@ -245,6 +225,26 @@ $('#long-content-container').scrollbox('scrollBy', undefined, 'bottom');
 #### .destroy()
 
 Completely removes all stuff from the element.
+
+### Events
+
+Scrollbox triggers a several events during lifecycle.
+
+#### reachleft.scrollbox
+
+Triggered when scrolling reach the left boundary of the content. Respects `distanceToReach.x` option.
+
+#### reachright.scrollbox
+
+Triggered when scrolling reach the right boundary of the content. Respects `distanceToReach.x` option.
+
+#### reachtop.scrollbox
+
+Triggered when scrolling reach the top boundary of the content. Respects `distanceToReach.y` option.
+
+#### reachbottom.scrollbox
+
+Triggered when scrolling reach the bottom boundary of the content. Respects `distanceToReach.y` option.
 
 ## Infinite scrolling implementation example
 
