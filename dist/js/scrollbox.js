@@ -86,7 +86,6 @@ var Scrollbox = function ($) {
             this._$verticalBar = $(config.templates.verticalBar).addClass(ClassName.BAR + ' ' + ClassName.VERTICAL_BAR);
 
             this._syncElementSize();
-            this._syncMaxScrollSize();
 
             this._isHorizontalBarCaptured = false;
             this._isVerticalBarCaptured = false;
@@ -289,7 +288,9 @@ var Scrollbox = function ($) {
                 var IS_VERTICAL_SCROLL_SHOWN = this._$verticalBar.hasClass(ClassName.BAR_SHOWN);
 
                 this._syncElementSize();
-                this._syncMaxScrollSize();
+
+                this._maxScrollLeft = this._$element[0].scrollWidth - this._elementOuterWidth;
+                this._maxScrollTop = this._$element[0].scrollHeight - this._elementOuterHeight;
 
                 this._$horizontalRail.width(this._elementOuterWidth);
                 this._$verticalRail.height(this._elementOuterHeight);
@@ -787,12 +788,6 @@ var Scrollbox = function ($) {
             value: function _syncElementSize() {
                 this._elementOuterWidth = this._$element.outerWidth();
                 this._elementOuterHeight = this._$element.outerHeight();
-            }
-        }, {
-            key: '_syncMaxScrollSize',
-            value: function _syncMaxScrollSize() {
-                this._maxScrollLeft = this._$element[0].scrollWidth - this._elementOuterWidth;
-                this._maxScrollTop = this._$element[0].scrollHeight - this._elementOuterHeight;
             }
         }, {
             key: '_syncCurrentPosition',
