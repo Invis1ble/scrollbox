@@ -55,16 +55,19 @@ module.exports = (grunt) => {
         },
         uglify: {
             options: {
-                sourceMap: true
+                report: 'gzip',
+                sourceMap: true,
+                screwIE8: false,
+                banner: `/*!
+* Scrollbox v<%= pkg.version %>
+* (c) 2013-<%= grunt.template.today('yyyy') %>, <%= pkg.author %>
+* Licensed under MIT (https://opensource.org/licenses/mit-license.php)
+*/`,
+                compress: {
+                    unsafe: true
+                }
             },
             dist: {
-                options: {
-                    banner: `/*!
- * Scrollbox v<%= pkg.version %>
- * (c) 2013-2016, <%= pkg.author %>
- * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
- */`
-                },
                 files: {
                     'dist/js/<%= pkg.name %>.min.js': 'dist/js/<%= pkg.name %>.js'
                 }
@@ -225,6 +228,9 @@ module.exports = (grunt) => {
         'clean',
         'babel:development',
         'less:development',
+        'postcss',
+        'uglify',
+        'cssmin',
         'tests'
     ]);
 

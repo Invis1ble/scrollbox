@@ -167,8 +167,9 @@ const Scrollbox = (($) => {
                 deltaY = 0;
             }
 
-            let destinationX = this._currentPosition.x + deltaX;
-            let destinationY = this._currentPosition.y + deltaY;
+            const DESTINATION_X = this._currentPosition.x + deltaX;
+            const DESTINATION_Y = this._currentPosition.y + deltaY;
+
             let computedDestinationX;
             let computedDestinationY;
 
@@ -180,20 +181,20 @@ const Scrollbox = (($) => {
                 return;
             }
 
-            if (destinationX >= this._maxScrollLeft) {
+            if (DESTINATION_X >= this._maxScrollLeft) {
                 computedDestinationX = this._maxScrollLeft;
-            } else if (destinationX <= 0) {
+            } else if (DESTINATION_X <= 0) {
                 computedDestinationX = 0;
             } else {
-                computedDestinationX = destinationX;
+                computedDestinationX = DESTINATION_X;
             }
 
-            if (destinationY >= this._maxScrollTop) {
+            if (DESTINATION_Y >= this._maxScrollTop) {
                 computedDestinationY = this._maxScrollTop;
-            } else if (destinationY <= 0) {
+            } else if (DESTINATION_Y <= 0) {
                 computedDestinationY = 0;
             } else {
-                computedDestinationY = destinationY;
+                computedDestinationY = DESTINATION_Y;
             }
 
             if (undefined === animationOptions) {
@@ -210,9 +211,9 @@ const Scrollbox = (($) => {
             animationOptions.progress = (animation) => {
                 if (
                     null === this._currentPosition ||
-                    (computedDestinationX !== destinationX &&
+                    (computedDestinationX !== DESTINATION_X &&
                     computedDestinationX === this._currentPosition.x &&
-                    computedDestinationY !== destinationY &&
+                    computedDestinationY !== DESTINATION_Y &&
                     computedDestinationY === this._currentPosition.y)
                 ) {
                     animation.stop();
@@ -220,8 +221,8 @@ const Scrollbox = (($) => {
             };
 
             this._$element.animate({
-                scrollLeft: destinationX,
-                scrollTop: destinationY
+                scrollLeft: DESTINATION_X,
+                scrollTop: DESTINATION_Y
             }, animationOptions);
         }
 
@@ -231,14 +232,6 @@ const Scrollbox = (($) => {
         }
 
         destroy() {
-            if (this._isHorizontalScrollShown()) {
-                this._removeListenersFromHorizontalScroll();
-            }
-
-            if (this._isVerticalScrollShown()) {
-                this._removeListenersFromVerticalScroll();
-            }
-
             if (this._hasCommonListeners) {
                 this._removeCommonListeners();
             }
@@ -294,10 +287,10 @@ const Scrollbox = (($) => {
         }
 
         _sync() {
-            let isOverflowedX = this._isOverflowedX();
-            let isOverflowedY = this._isOverflowedY();
-            let isHorizontalScrollShown = this._isHorizontalScrollShown();
-            let isVerticalScrollShown = this._isVerticalScrollShown();
+            const IS_OVERFLOWED_X = this._elementOuterWidth < this._$element[0].scrollWidth;
+            const IS_OVERFLOWED_Y = this._elementOuterHeight < this._$element[0].scrollHeight;
+            const IS_HORIZONTAL_SCROLL_SHOWN = this._$horizontalBar.hasClass(ClassName.BAR_SHOWN);
+            const IS_VERTICAL_SCROLL_SHOWN = this._$verticalBar.hasClass(ClassName.BAR_SHOWN);
 
             this._syncElementSize();
             this._syncMaxScrollSize();
@@ -305,18 +298,18 @@ const Scrollbox = (($) => {
             this._$horizontalRail.width(this._elementOuterWidth);
             this._$verticalRail.height(this._elementOuterHeight);
 
-            if (isOverflowedX) {
+            if (IS_OVERFLOWED_X) {
                 this._updateHorizontalBarSize();
                 this._updateHorizontalBarPosition();
 
-                if (!isHorizontalScrollShown) {
+                if (!IS_HORIZONTAL_SCROLL_SHOWN) {
                     this._addListenersToHorizontalScroll();
 
                     this._$horizontalBar.addClass(ClassName.BAR_SHOWN);
                     this._$horizontalRail.addClass(ClassName.RAIL_SHOWN);
                 }
             } else {
-                if (isHorizontalScrollShown) {
+                if (IS_HORIZONTAL_SCROLL_SHOWN) {
                     this._removeListenersFromHorizontalScroll();
 
                     this._$horizontalBar.removeClass(ClassName.BAR_SHOWN);
@@ -324,18 +317,18 @@ const Scrollbox = (($) => {
                 }
             }
 
-            if (isOverflowedY) {
+            if (IS_OVERFLOWED_Y) {
                 this._updateVerticalBarSize();
                 this._updateVerticalBarPosition();
 
-                if (!isVerticalScrollShown) {
+                if (!IS_VERTICAL_SCROLL_SHOWN) {
                     this._addListenersToVerticalScroll();
 
                     this._$verticalBar.addClass(ClassName.BAR_SHOWN);
                     this._$verticalRail.addClass(ClassName.RAIL_SHOWN);
                 }
             } else {
-                if (isVerticalScrollShown) {
+                if (IS_VERTICAL_SCROLL_SHOWN) {
                     this._removeListenersFromVerticalScroll();
 
                     this._$verticalBar.removeClass(ClassName.BAR_SHOWN);
@@ -345,14 +338,14 @@ const Scrollbox = (($) => {
 
             if (
                 !this._hasCommonListeners &&
-                (isOverflowedX && !isHorizontalScrollShown) ||
-                (isOverflowedY && !isVerticalScrollShown)
+                (IS_OVERFLOWED_X && !IS_HORIZONTAL_SCROLL_SHOWN) ||
+                (IS_OVERFLOWED_Y && !IS_VERTICAL_SCROLL_SHOWN)
             ) {
                 this._addCommonListeners();
             } else if (
                 this._hasCommonListeners &&
-                !isOverflowedX && isHorizontalScrollShown &&
-                !isOverflowedY && isVerticalScrollShown
+                !IS_OVERFLOWED_X && IS_HORIZONTAL_SCROLL_SHOWN &&
+                !IS_OVERFLOWED_Y && IS_VERTICAL_SCROLL_SHOWN
             ) {
                 this._removeCommonListeners();
             }
@@ -447,7 +440,7 @@ const Scrollbox = (($) => {
         }
 
         _onElementTouchStart(e) {
-            let touches = e.originalEvent.targetTouches;
+            const touches = e.originalEvent.targetTouches;
 
             if (1 == touches.length) {
                 if (this._$element.is(':animated')) {
@@ -516,7 +509,7 @@ const Scrollbox = (($) => {
         }
 
         _onHorizontalBarTouchStart(e) {
-            let touches = e.originalEvent.targetTouches;
+            const touches = e.originalEvent.targetTouches;
     
             if (1 == touches.length) {
                 e.preventDefault();
@@ -527,7 +520,7 @@ const Scrollbox = (($) => {
         }
 
         _onVerticalBarTouchStart(e) {
-            let touches = e.originalEvent.targetTouches;
+            const touches = e.originalEvent.targetTouches;
     
             if (1 == touches.length) {
                 e.preventDefault();
@@ -576,28 +569,29 @@ const Scrollbox = (($) => {
         _onElementTouchEnd(e) {
             $.each(e.originalEvent.changedTouches, (i, touch) => {
                 if (touch.identifier === this._elementTouchId) {
-                    let swipeDuration = Date.now() - this._swipeStartedAt;
+                    const SWIPE_DURATION = Date.now() - this._swipeStartedAt;
 
-                    if (swipeDuration <= this._config.momentum.thresholdTime) {
-                        let swipeWidth = this._swipeStartPosition.x - touch.pageX;
-                        let swipeHeight = this._swipeStartPosition.y - touch.pageY;
-                        let swipeHorizontalSpeed = Math.abs(swipeWidth / swipeDuration);
-                        let swipeVerticalSpeed = Math.abs(swipeHeight / swipeDuration);
-                        let deltaX = swipeHorizontalSpeed * swipeHorizontalSpeed * 2 * this._config.momentum.acceleration;
-                        let deltaY = swipeVerticalSpeed * swipeVerticalSpeed * 2 * this._config.momentum.acceleration;
+                    if (SWIPE_DURATION <= this._config.momentum.thresholdTime) {
+                        const SWIPE_WIDTH = this._swipeStartPosition.x - touch.pageX;
+                        const SWIPE_HEIGHT = this._swipeStartPosition.y - touch.pageY;
+                        const SWIPE_HORIZONTAL_SPEED = Math.abs(SWIPE_WIDTH / SWIPE_DURATION);
+                        const SWIPE_VERTICAL_SPEED = Math.abs(SWIPE_HEIGHT / SWIPE_DURATION);
 
-                        if (swipeWidth < 0) {
+                        let deltaX = SWIPE_HORIZONTAL_SPEED * SWIPE_HORIZONTAL_SPEED * 2 * this._config.momentum.acceleration;
+                        let deltaY = SWIPE_VERTICAL_SPEED * SWIPE_VERTICAL_SPEED * 2 * this._config.momentum.acceleration;
+
+                        if (SWIPE_WIDTH < 0) {
                             deltaX *= -1;
                         }
 
-                        if (swipeHeight < 0) {
+                        if (SWIPE_HEIGHT < 0) {
                             deltaY *= -1;
                         }
 
                         this.scrollBy(deltaX, deltaY, {
                             duration: Math.max(
-                                swipeHorizontalSpeed * this._config.momentum.acceleration,
-                                swipeVerticalSpeed * this._config.momentum.acceleration
+                                SWIPE_HORIZONTAL_SPEED * this._config.momentum.acceleration,
+                                SWIPE_VERTICAL_SPEED * this._config.momentum.acceleration
                             ),
                             easing: 'momentum'
                         });
@@ -643,7 +637,7 @@ const Scrollbox = (($) => {
         }
 
         _onDocumentTouchEnd(e) {
-            let touches = e.originalEvent.changedTouches;
+            const touches = e.originalEvent.changedTouches;
 
             if (null !== this._horizontalBarTouchId) {
                 $.each(touches, (i, touch) => {
@@ -726,17 +720,17 @@ const Scrollbox = (($) => {
         }
 
         _updateHorizontalBarSize() {
-            let width = this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth;
+            const WIDTH = this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth;
 
-            this._$horizontalBar.width(width);
-            this._horizontalBarWidth = width;
+            this._$horizontalBar.width(WIDTH);
+            this._horizontalBarWidth = WIDTH;
         }
 
         _updateVerticalBarSize() {
-            let height = this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight;
+            const HEIGHT = this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight;
 
-            this._$verticalBar.height(height);
-            this._verticalBarHeight = height;
+            this._$verticalBar.height(HEIGHT);
+            this._verticalBarHeight = HEIGHT;
         }
 
         _updateHorizontalBarPosition() {
@@ -789,22 +783,6 @@ const Scrollbox = (($) => {
             }
         }
 
-        _isOverflowedX() {
-            return this._elementOuterWidth < this._$element[0].scrollWidth;
-        }
-
-        _isOverflowedY() {
-            return this._elementOuterHeight < this._$element[0].scrollHeight;
-        }
-
-        _isHorizontalScrollShown() {
-            return this._$horizontalBar.hasClass(ClassName.BAR_SHOWN);
-        }
-
-        _isVerticalScrollShown() {
-            return this._$verticalBar.hasClass(ClassName.BAR_SHOWN);
-        }
-
         _syncElementSize() {
             this._elementOuterWidth = this._$element.outerWidth();
             this._elementOuterHeight = this._$element.outerHeight();
@@ -824,24 +802,25 @@ const Scrollbox = (($) => {
 
         static _jQueryInterface(config, ...args) {
             return this.each(() => {
-                let $this = $(this);
-                let instance = $this.data(DATA_KEY);
+                const $this = $(this);
 
-                if (!instance) {
-                    instance = new Scrollbox(
+                let scrollbox = $this.data(DATA_KEY);
+
+                if (!scrollbox) {
+                    scrollbox = new Scrollbox(
                         this,
                         $.extend(true, {}, Scrollbox.Default, $this.data(), 'object' === typeof config && config)
                     );
 
-                    $this.data(DATA_KEY, instance);
+                    $this.data(DATA_KEY, scrollbox);
                 }
 
                 if ('string' === typeof config) {
-                    if ('function' !== typeof instance[config]) {
+                    if ('function' !== typeof scrollbox[config]) {
                         throw new Error(`No method named "${config}"`);
                     }
 
-                    instance[config].apply(instance, args);
+                    scrollbox[config].apply(scrollbox, args);
                 }
             });
         }
