@@ -177,7 +177,7 @@ module.exports = (grunt) => {
             unitTestsLess: {
                 files: 'tests/unit/src/less/styles.less',
                 tasks: ['less:unitTests']
-            },
+            }
         },
         connect: {
             tests: {
