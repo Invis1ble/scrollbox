@@ -1,9 +1,4 @@
 engines:
-    duplication:
-        enabled: true
-        config:
-            languages:
-                - javascript
     eslint:
         enabled: true
     fixme:
@@ -11,7 +6,7 @@ engines:
 
 ratings:
     paths:
-        - "**.js"
+        - "src/js/scrollbox.js"
 
 exclude_paths:
     - dist/
