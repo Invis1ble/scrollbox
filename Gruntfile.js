@@ -151,7 +151,7 @@ module.exports = (grunt) => {
             }
         },
         qunit: {
-            files: 'tests/unit/index.html'
+            dist: 'tests/unit/index.html'
         },
         watch: {
             srcJs: {
