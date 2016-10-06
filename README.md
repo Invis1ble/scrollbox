@@ -1,6 +1,6 @@
 # Scrollbox
 
-[![Build Status](https://travis-ci.org/Invis1ble/scrollbox.svg?branch=develop)](https://travis-ci.org/Invis1ble/scrollbox)
+[![Build Status](https://travis-ci.org/Invis1ble/scrollbox.svg?branch=master)](https://travis-ci.org/Invis1ble/scrollbox)
 ![Bower version](https://img.shields.io/bower/v/scrollbox.svg)
 [![npm version](https://img.shields.io/npm/v/scrollbox.svg)](https://www.npmjs.com/package/scrollbox)
 [![Packagist Prerelease](https://img.shields.io/packagist/vpre/Invis1ble/scrollbox.svg)](https://packagist.org/packages/Invis1ble/scrollbox)
