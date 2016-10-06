@@ -151,7 +151,7 @@ module.exports = (grunt) => {
             }
         },
         qunit: {
-            files: 'tests/unit/index.html'
+            dist: 'tests/unit/index.html'
         },
         watch: {
             srcJs: {
@@ -177,7 +177,7 @@ module.exports = (grunt) => {
             unitTestsLess: {
                 files: 'tests/unit/src/less/styles.less',
                 tasks: ['less:unitTests']
-            },
+            }
         },
         connect: {
             tests: {
