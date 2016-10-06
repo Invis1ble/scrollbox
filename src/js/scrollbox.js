@@ -1,5 +1,5 @@
 /*!
- * Scrollbox v3.0.0-beta.1
+ * Scrollbox v3.0.0-beta.2
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -7,7 +7,7 @@
 const Scrollbox = (($) => {
 
     const NAME               = 'scrollbox';
-    const VERSION            = '3.0.0-beta.1';
+    const VERSION            = '3.0.0-beta.2';
     const DATA_KEY           = NAME;
     const JQUERY_NO_CONFLICT = $.fn[NAME];
 
