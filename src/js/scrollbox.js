@@ -1,5 +1,5 @@
 /*!
- * Scrollbox v3.0.0-beta.1
+ * Scrollbox v3.0.0-beta.2
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -7,7 +7,7 @@
 const Scrollbox = (($) => {
 
     const NAME               = 'scrollbox';
-    const VERSION            = '3.0.0-beta.1';
+    const VERSION            = '3.0.0-beta.2';
     const DATA_KEY           = NAME;
     const JQUERY_NO_CONFLICT = $.fn[NAME];
 
@@ -721,17 +721,19 @@ const Scrollbox = (($) => {
         }
 
         _updateHorizontalBarSize() {
-            const WIDTH = this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth;
+            this._$horizontalBar.width(
+                this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth
+            );
 
-            this._$horizontalBar.width(WIDTH);
-            this._horizontalBarWidth = WIDTH;
+            this._horizontalBarWidth = this._$horizontalBar.outerWidth();
         }
 
         _updateVerticalBarSize() {
-            const HEIGHT = this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight;
+            this._$verticalBar.height(
+                this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight
+            );
 
-            this._$verticalBar.height(HEIGHT);
-            this._verticalBarHeight = HEIGHT;
+            this._verticalBarHeight = this._$verticalBar.outerHeight();
         }
 
         _updateHorizontalBarPosition() {

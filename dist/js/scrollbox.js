@@ -7,7 +7,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /*!
- * Scrollbox v3.0.0-beta.1
+ * Scrollbox v3.0.0-beta.2
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -15,7 +15,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Scrollbox = function ($) {
 
     var NAME = 'scrollbox';
-    var VERSION = '3.0.0-beta.1';
+    var VERSION = '3.0.0-beta.2';
     var DATA_KEY = NAME;
     var JQUERY_NO_CONFLICT = $.fn[NAME];
 
@@ -737,18 +737,16 @@ var Scrollbox = function ($) {
         }, {
             key: '_updateHorizontalBarSize',
             value: function _updateHorizontalBarSize() {
-                var WIDTH = this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth;
+                this._$horizontalBar.width(this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth);
 
-                this._$horizontalBar.width(WIDTH);
-                this._horizontalBarWidth = WIDTH;
+                this._horizontalBarWidth = this._$horizontalBar.outerWidth();
             }
         }, {
             key: '_updateVerticalBarSize',
             value: function _updateVerticalBarSize() {
-                var HEIGHT = this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight;
+                this._$verticalBar.height(this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight);
 
-                this._$verticalBar.height(HEIGHT);
-                this._verticalBarHeight = HEIGHT;
+                this._verticalBarHeight = this._$verticalBar.outerHeight();
             }
         }, {
             key: '_updateHorizontalBarPosition',
