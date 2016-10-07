@@ -443,7 +443,7 @@ const Scrollbox = (($) => {
         _onElementTouchStart(e) {
             const touches = e.originalEvent.targetTouches;
 
-            if (1 == touches.length) {
+            if (touches.length) {
                 if (this._$element.is(':animated')) {
                     this._$element.stop(true, false);
                 }
@@ -512,7 +512,7 @@ const Scrollbox = (($) => {
         _onHorizontalBarTouchStart(e) {
             const touches = e.originalEvent.targetTouches;
     
-            if (1 == touches.length) {
+            if (touches.length) {
                 e.preventDefault();
     
                 this._horizontalBarTouchId = touches[0].identifier;
@@ -523,7 +523,7 @@ const Scrollbox = (($) => {
         _onVerticalBarTouchStart(e) {
             const touches = e.originalEvent.targetTouches;
     
-            if (1 == touches.length) {
+            if (touches.length) {
                 e.preventDefault();
     
                 this._verticalBarTouchId = touches[0].identifier;
@@ -835,7 +835,7 @@ const Scrollbox = (($) => {
     if (!$.easing.momentum) {
         // easeOutExpo
         $.easing.momentum = (x, t, b, c, d) => {
-            return t == d ? b + c : c * (- Math.pow(2, -10 * t / d) + 1) + b;
+            return t === d ? b + c : c * (- Math.pow(2, -10 * t / d) + 1) + b;
         };
     }
 
