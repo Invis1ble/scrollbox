@@ -1,5 +1,5 @@
 /*!
- * Scrollbox v3.0.0-beta.3
+ * Scrollbox v3.0.0-beta.4
  * (c) 2013-2016, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -7,7 +7,7 @@
 const Scrollbox = (($) => {
 
     const NAME               = 'scrollbox';
-    const VERSION            = '3.0.0-beta.3';
+    const VERSION            = '3.0.0-beta.4';
     const DATA_KEY           = NAME;
     const JQUERY_NO_CONFLICT = $.fn[NAME];
 
@@ -120,32 +120,20 @@ const Scrollbox = (($) => {
          * @param {Object} [animationOptions]
          */
         scrollTo(x, y, animationOptions) {
-            switch (x) {
-                case Position.LEFT:
-                    x = 0;
-                    break;
-
-                case Position.RIGHT:
-                    x = this._maxScrollLeft;
-                    break;
-
-                case undefined:
-                    x = this._currentPosition.x;
-                    break;
+            if (Position.LEFT === x) {
+                x = 0;
+            } else if (Position.RIGHT === x) {
+                x = this._maxScrollLeft;
+            } else if (undefined === x) {
+                x = this._currentPosition.x;
             }
 
-            switch (y) {
-                case Position.TOP:
-                    y = 0;
-                    break;
-
-                case Position.BOTTOM:
-                    y = this._maxScrollTop;
-                    break;
-
-                case undefined:
-                    y = this._currentPosition.y;
-                    break;
+            if (Position.TOP === y) {
+                y = 0;
+            } else if (Position.BOTTOM === y) {
+                y = this._maxScrollTop;
+            } else if (undefined === y) {
+                y = this._currentPosition.y;
             }
 
             this.scrollBy(x - this._currentPosition.x, y - this._currentPosition.y, animationOptions);
@@ -166,6 +154,12 @@ const Scrollbox = (($) => {
                 deltaY = 0;
             }
 
+            if (0 === deltaX && 0 === deltaY) {
+                this._checkIsReached();
+
+                return;
+            }
+
             const DESTINATION_X = this._currentPosition.x + deltaX;
             const DESTINATION_Y = this._currentPosition.y + deltaY;
 
@@ -173,12 +167,6 @@ const Scrollbox = (($) => {
             let computedDestinationY;
 
             this._$element.stop(true, false);
-
-            if (0 === deltaX && 0 === deltaY) {
-                this._checkIsReached();
-
-                return;
-            }
 
             if (DESTINATION_X >= this._maxScrollLeft) {
                 computedDestinationX = this._maxScrollLeft;
@@ -443,7 +431,7 @@ const Scrollbox = (($) => {
         _onElementTouchStart(e) {
             const touches = e.originalEvent.targetTouches;
 
-            if (1 == touches.length) {
+            if (touches.length) {
                 if (this._$element.is(':animated')) {
                     this._$element.stop(true, false);
                 }
@@ -512,7 +500,7 @@ const Scrollbox = (($) => {
         _onHorizontalBarTouchStart(e) {
             const touches = e.originalEvent.targetTouches;
     
-            if (1 == touches.length) {
+            if (touches.length) {
                 e.preventDefault();
     
                 this._horizontalBarTouchId = touches[0].identifier;
@@ -523,7 +511,7 @@ const Scrollbox = (($) => {
         _onVerticalBarTouchStart(e) {
             const touches = e.originalEvent.targetTouches;
     
-            if (1 == touches.length) {
+            if (touches.length) {
                 e.preventDefault();
     
                 this._verticalBarTouchId = touches[0].identifier;
@@ -835,6 +823,7 @@ const Scrollbox = (($) => {
     if (!$.easing.momentum) {
         // easeOutExpo
         $.easing.momentum = (x, t, b, c, d) => {
+            /* eslint eqeqeq: "off" */
             return t == d ? b + c : c * (- Math.pow(2, -10 * t / d) + 1) + b;
         };
     }

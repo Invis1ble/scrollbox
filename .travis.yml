@@ -1,7 +1,3 @@
-branches:
-    except:
-        - v3-develop
-
 language: node_js
 
 node_js:
