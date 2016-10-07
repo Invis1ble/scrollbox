@@ -128,9 +128,9 @@ const Scrollbox = (($) => {
                 x = this._currentPosition.x;
             }
 
-            if (Position.LEFT === y) {
+            if (Position.TOP === y) {
                 y = 0;
-            } else if (Position.RIGHT === y) {
+            } else if (Position.BOTTOM === y) {
                 y = this._maxScrollTop;
             } else if (undefined === y) {
                 y = this._currentPosition.y;
