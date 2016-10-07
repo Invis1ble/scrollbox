@@ -737,18 +737,16 @@ var Scrollbox = function ($) {
         }, {
             key: '_updateHorizontalBarSize',
             value: function _updateHorizontalBarSize() {
-                var WIDTH = this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth;
+                this._$horizontalBar.width(this._elementOuterWidth * this._elementOuterWidth / this._$element[0].scrollWidth);
 
-                this._$horizontalBar.width(WIDTH);
-                this._horizontalBarWidth = WIDTH;
+                this._horizontalBarWidth = this._$horizontalBar.outerWidth();
             }
         }, {
             key: '_updateVerticalBarSize',
             value: function _updateVerticalBarSize() {
-                var HEIGHT = this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight;
+                this._$verticalBar.height(this._elementOuterHeight * this._elementOuterHeight / this._$element[0].scrollHeight);
 
-                this._$verticalBar.height(HEIGHT);
-                this._verticalBarHeight = HEIGHT;
+                this._verticalBarHeight = this._$verticalBar.outerHeight();
             }
         }, {
             key: '_updateHorizontalBarPosition',

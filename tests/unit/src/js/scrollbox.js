@@ -111,35 +111,39 @@
 
             const ACTUAL_SCROLL_LEFT = $scrollbox.scrollLeft();
             const ACTUAL_SCROLL_TOP = $scrollbox.scrollTop();
+            const LEGAL_DELTA = 1;
 
             this.push(
-                ACTUAL_SCROLL_LEFT === expectedScrollLeft && ACTUAL_SCROLL_TOP === expectedScrollTop,
+                Math.abs(ACTUAL_SCROLL_LEFT - expectedScrollLeft) <= LEGAL_DELTA &&
+                Math.abs(ACTUAL_SCROLL_TOP - expectedScrollTop) <= LEGAL_DELTA,
                 `left: ${ACTUAL_SCROLL_LEFT}, top: ${ACTUAL_SCROLL_TOP}`,
                 `left: ${expectedScrollLeft}, top: ${expectedScrollTop}`,
                 undefined !== message ? message : 'scroll position is proper'
             );
         },
-        
+
         horizontalScrollPositionIs: function (scrollbox, expectedScrollLeft, message) {
             const $scrollbox = $(scrollbox);
 
             const ACTUAL_SCROLL_LEFT = $scrollbox.scrollLeft();
+            const LEGAL_DELTA = 1;
 
             this.push(
-                ACTUAL_SCROLL_LEFT === expectedScrollLeft,
+                Math.abs(ACTUAL_SCROLL_LEFT - expectedScrollLeft) <= LEGAL_DELTA,
                 ACTUAL_SCROLL_LEFT,
                 expectedScrollLeft,
                 undefined !== message ? message : 'horizontal scroll position is proper'
             );
         },
-        
+
         verticalScrollPositionIs: function (scrollbox, expectedScrollTop, message) {
             const $scrollbox = $(scrollbox);
 
             const ACTUAL_SCROLL_TOP = $scrollbox.scrollTop();
+            const LEGAL_DELTA = 1;
 
             this.push(
-                ACTUAL_SCROLL_TOP === expectedScrollTop,
+                Math.abs(ACTUAL_SCROLL_TOP - expectedScrollTop) <= LEGAL_DELTA,
                 ACTUAL_SCROLL_TOP,
                 expectedScrollTop,
                 undefined !== message ? message : 'vertical scroll position is proper'
@@ -1245,48 +1249,52 @@
 
             const CONTAINER_WIDTH = 50;
             const CONTENT_WIDTH = 200;
-            const WIDTH_RATIO = CONTAINER_WIDTH / CONTENT_WIDTH;
 
             const $scrollbox = createScrollbox(CONTAINER_WIDTH, CONTENT_WIDTH, 50, 200)
                 .scrollbox();
 
             const $horizontalBar = getHorizontalBar($scrollbox);
+            const BAR_WIDTH = $horizontalBar.outerWidth();
 
             const dragDelta = {
                 x: 10,
                 y: 0
             };
 
+            const calcExpectedScrollDelta = (dragDeltaX) => {
+                return dragDeltaX * (CONTENT_WIDTH - CONTAINER_WIDTH) / (CONTAINER_WIDTH - BAR_WIDTH);
+            };
+
             let horizontalBarOffset = $horizontalBar.offset();
             let scrollLeft = $scrollbox.scrollLeft();
-            let expectedDistanceX = dragDelta.x / WIDTH_RATIO;
+            let expectedScrollDelta = calcExpectedScrollDelta(dragDelta.x);
 
             dragAndDropViaMouse($horizontalBar, {
-                x: horizontalBarOffset.left,
+                x: Math.round(horizontalBarOffset.left + BAR_WIDTH / 2),
                 y: horizontalBarOffset.top
             }, dragDelta, 100)
                 .done(() => {
                     assert.horizontalScrollPositionIs(
                         $scrollbox,
-                        expectedDistanceX + scrollLeft,
-                        `scrolled right by ${Math.abs(expectedDistanceX)}px`
+                        scrollLeft + expectedScrollDelta,
+                        `scrolled right by ${Math.abs(expectedScrollDelta)}px`
                     );
                     done();
 
                     dragDelta.x = -8;
                     horizontalBarOffset = $horizontalBar.offset();
                     scrollLeft = $scrollbox.scrollLeft();
-                    expectedDistanceX = dragDelta.x / WIDTH_RATIO;
+                    expectedScrollDelta = calcExpectedScrollDelta(dragDelta.x);
 
                     dragAndDropViaMouse($horizontalBar, {
-                        x: horizontalBarOffset.left,
+                        x: Math.round(horizontalBarOffset.left + BAR_WIDTH / 2),
                         y: horizontalBarOffset.top
                     }, dragDelta, 100)
                         .done(() => {
                             assert.horizontalScrollPositionIs(
                                 $scrollbox,
-                                expectedDistanceX + scrollLeft,
-                                `scrolled left by ${Math.abs(expectedDistanceX)}px`
+                                scrollLeft + expectedScrollDelta,
+                                `scrolled left by ${Math.abs(expectedScrollDelta)}px`
                             );
                             done();
                         });
@@ -1299,48 +1307,52 @@
 
             const CONTAINER_HEIGHT = 50;
             const CONTENT_HEIGHT = 200;
-            const HEIGHT_RATIO = CONTAINER_HEIGHT / CONTENT_HEIGHT;
 
             const $scrollbox = createScrollbox(50, 200, CONTAINER_HEIGHT, CONTENT_HEIGHT)
                 .scrollbox();
 
             const $verticalBar = getVerticalBar($scrollbox);
+            const BAR_HEIGHT = $verticalBar.outerHeight();
 
             const dragDelta = {
                 x: 0,
                 y: 10
             };
 
+            const calcExpectedScrollDelta = (dragDeltaY) => {
+                return dragDeltaY * (CONTENT_HEIGHT - CONTAINER_HEIGHT) / (CONTAINER_HEIGHT - BAR_HEIGHT);
+            };
+
             let verticalBarOffset = $verticalBar.offset();
             let scrollTop = $scrollbox.scrollTop();
-            let expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
+            let expectedScrollDelta = calcExpectedScrollDelta(dragDelta.y);
 
             dragAndDropViaMouse($verticalBar, {
                 x: verticalBarOffset.left,
-                y: verticalBarOffset.top
+                y: Math.round(verticalBarOffset.top + BAR_HEIGHT / 2)
             }, dragDelta, 100)
                 .done(() => {
                     assert.verticalScrollPositionIs(
                         $scrollbox,
-                        expectedDistanceY + scrollTop,
-                        `scrolled bottom by ${Math.abs(expectedDistanceY)}px`
+                        scrollTop + expectedScrollDelta,
+                        `scrolled bottom by ${Math.abs(expectedScrollDelta)}px`
                     );
                     done();
 
                     dragDelta.y = -8;
                     verticalBarOffset = $verticalBar.offset();
                     scrollTop = $scrollbox.scrollTop();
-                    expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
+                    expectedScrollDelta = calcExpectedScrollDelta(dragDelta.y);
 
                     dragAndDropViaMouse($verticalBar, {
                         x: verticalBarOffset.left,
-                        y: verticalBarOffset.top
+                        y: Math.round(verticalBarOffset.top + BAR_HEIGHT / 2)
                     }, dragDelta, 100)
                         .done(() => {
                             assert.verticalScrollPositionIs(
                                 $scrollbox,
-                                expectedDistanceY + scrollTop,
-                                `scrolled top by ${Math.abs(expectedDistanceY)}px`
+                                scrollTop + expectedScrollDelta,
+                                `scrolled top by ${Math.abs(expectedScrollDelta)}px`
                             );
                             done();
                         });
@@ -1354,21 +1366,25 @@
 
                 const CONTAINER_WIDTH = 50;
                 const CONTENT_WIDTH = 200;
-                const WIDTH_RATIO = CONTAINER_WIDTH / CONTENT_WIDTH;
 
                 const $scrollbox = createScrollbox(CONTAINER_WIDTH, CONTENT_WIDTH, 50, 200)
                     .scrollbox();
 
                 const $horizontalBar = getHorizontalBar($scrollbox);
+                const BAR_WIDTH = $horizontalBar.outerWidth();
 
                 const dragDelta = {
                     x: 10,
                     y: 0
                 };
 
+                const calcExpectedScrollDelta = (dragDeltaX) => {
+                    return dragDeltaX * (CONTENT_WIDTH - CONTAINER_WIDTH) / (CONTAINER_WIDTH - BAR_WIDTH);
+                };
+
                 let horizontalBarOffset = $horizontalBar.offset();
                 let scrollLeft = $scrollbox.scrollLeft();
-                let expectedDistanceX = dragDelta.x / WIDTH_RATIO;
+                let expectedScrollDelta = calcExpectedScrollDelta(dragDelta.x);
 
                 dragAndDropViaTouch({
                     x: horizontalBarOffset.left,
@@ -1377,25 +1393,25 @@
                     .done(() => {
                         assert.horizontalScrollPositionIs(
                             $scrollbox,
-                            expectedDistanceX + scrollLeft,
-                            `scrolled right by ${Math.abs(expectedDistanceX)}px`
+                            scrollLeft + expectedScrollDelta,
+                            `scrolled right by ${Math.abs(expectedScrollDelta)}px`
                         );
                         done();
 
                         dragDelta.x = -8;
                         horizontalBarOffset = $horizontalBar.offset();
                         scrollLeft = $scrollbox.scrollLeft();
-                        expectedDistanceX = dragDelta.x / WIDTH_RATIO;
+                        expectedScrollDelta = calcExpectedScrollDelta(dragDelta.x);
 
                         dragAndDropViaTouch({
-                            x: horizontalBarOffset.left + $horizontalBar.outerWidth() - 1,
+                            x: parseInt(horizontalBarOffset.left, 10) + $horizontalBar.outerWidth() - 1,
                             y: horizontalBarOffset.top
                         }, dragDelta, 100)
                             .done(() => {
                                 assert.horizontalScrollPositionIs(
                                     $scrollbox,
-                                    expectedDistanceX + scrollLeft,
-                                    `scrolled left by ${Math.abs(expectedDistanceX)}px`
+                                    scrollLeft + expectedScrollDelta,
+                                    `scrolled left by ${Math.abs(expectedScrollDelta)}px`
                                 );
                                 done();
                             });
@@ -1408,21 +1424,25 @@
 
                 const CONTAINER_HEIGHT = 50;
                 const CONTENT_HEIGHT = 200;
-                const HEIGHT_RATIO = CONTAINER_HEIGHT / CONTENT_HEIGHT;
 
                 const $scrollbox = createScrollbox(50, 200, CONTAINER_HEIGHT, CONTENT_HEIGHT)
                     .scrollbox();
 
                 const $verticalBar = getVerticalBar($scrollbox);
+                const BAR_HEIGHT = $verticalBar.outerHeight();
 
                 const dragDelta = {
                     x: 0,
                     y: 10
                 };
 
+                const calcExpectedScrollDelta = (dragDeltaY) => {
+                    return dragDeltaY * (CONTENT_HEIGHT - CONTAINER_HEIGHT) / (CONTAINER_HEIGHT - BAR_HEIGHT);
+                };
+
                 let verticalBarOffset = $verticalBar.offset();
                 let scrollTop = $scrollbox.scrollTop();
-                let expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
+                let expectedScrollDelta = calcExpectedScrollDelta(dragDelta.y);
 
                 dragAndDropViaTouch({
                     x: verticalBarOffset.left,
@@ -1431,25 +1451,25 @@
                     .done(() => {
                         assert.verticalScrollPositionIs(
                             $scrollbox,
-                            expectedDistanceY + scrollTop,
-                            `scrolled bottom by ${Math.abs(expectedDistanceY)}px`
+                            scrollTop + expectedScrollDelta,
+                            `scrolled bottom by ${Math.abs(expectedScrollDelta)}px`
                         );
                         done();
 
                         dragDelta.y = -8;
                         verticalBarOffset = $verticalBar.offset();
                         scrollTop = $scrollbox.scrollTop();
-                        expectedDistanceY = dragDelta.y / HEIGHT_RATIO;
+                        expectedScrollDelta = calcExpectedScrollDelta(dragDelta.y);
 
                         dragAndDropViaTouch({
                             x: verticalBarOffset.left,
-                            y: verticalBarOffset.top + $verticalBar.outerHeight() - 1
+                            y: parseInt(verticalBarOffset.top, 10) + $verticalBar.outerHeight() - 1
                         }, dragDelta, 100)
                             .done(() => {
                                 assert.verticalScrollPositionIs(
                                     $scrollbox,
-                                    expectedDistanceY + scrollTop,
-                                    `scrolled top by ${Math.abs(expectedDistanceY)}px`
+                                    scrollTop + expectedScrollDelta,
+                                    `scrolled top by ${Math.abs(expectedScrollDelta)}px`
                                 );
                                 done();
                             });
