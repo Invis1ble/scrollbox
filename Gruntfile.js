@@ -16,6 +16,9 @@ module.exports = (grunt) => {
         clean: [
             'dist/*'
         ],
+        eslint: {
+            src: ['src/js/scrollbox.js']
+        },
         babel: {
             options: {
                 presets: [
@@ -215,6 +218,7 @@ module.exports = (grunt) => {
     ]);
 
     grunt.registerTask('production', [
+        'eslint',
         'clean',
         'babel:production',
         'less:production',
@@ -225,6 +229,7 @@ module.exports = (grunt) => {
     ]);
 
     grunt.registerTask('development', [
+        'eslint',
         'clean',
         'babel:development',
         'less:development',
