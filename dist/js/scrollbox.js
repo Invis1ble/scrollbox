@@ -121,32 +121,20 @@ var Scrollbox = function ($) {
              * @param {Object} [animationOptions]
              */
             value: function scrollTo(x, y, animationOptions) {
-                switch (x) {
-                    case Position.LEFT:
-                        x = 0;
-                        break;
-
-                    case Position.RIGHT:
-                        x = this._maxScrollLeft;
-                        break;
-
-                    case undefined:
-                        x = this._currentPosition.x;
-                        break;
+                if (Position.LEFT === x) {
+                    x = 0;
+                } else if (Position.RIGHT === x) {
+                    x = this._maxScrollLeft;
+                } else if (undefined === x) {
+                    x = this._currentPosition.x;
                 }
 
-                switch (y) {
-                    case Position.TOP:
-                        y = 0;
-                        break;
-
-                    case Position.BOTTOM:
-                        y = this._maxScrollTop;
-                        break;
-
-                    case undefined:
-                        y = this._currentPosition.y;
-                        break;
+                if (Position.TOP === y) {
+                    y = 0;
+                } else if (Position.BOTTOM === y) {
+                    y = this._maxScrollTop;
+                } else if (undefined === y) {
+                    y = this._currentPosition.y;
                 }
 
                 this.scrollBy(x - this._currentPosition.x, y - this._currentPosition.y, animationOptions);
@@ -172,6 +160,12 @@ var Scrollbox = function ($) {
                     deltaY = 0;
                 }
 
+                if (0 === deltaX && 0 === deltaY) {
+                    this._checkIsReached();
+
+                    return;
+                }
+
                 var DESTINATION_X = this._currentPosition.x + deltaX;
                 var DESTINATION_Y = this._currentPosition.y + deltaY;
 
@@ -179,12 +173,6 @@ var Scrollbox = function ($) {
                 var computedDestinationY = void 0;
 
                 this._$element.stop(true, false);
-
-                if (0 === deltaX && 0 === deltaY) {
-                    this._checkIsReached();
-
-                    return;
-                }
 
                 if (DESTINATION_X >= this._maxScrollLeft) {
                     computedDestinationX = this._maxScrollLeft;
@@ -434,7 +422,7 @@ var Scrollbox = function ($) {
             value: function _onElementTouchStart(e) {
                 var touches = e.originalEvent.targetTouches;
 
-                if (1 == touches.length) {
+                if (touches.length) {
                     if (this._$element.is(':animated')) {
                         this._$element.stop(true, false);
                     }
@@ -509,7 +497,7 @@ var Scrollbox = function ($) {
             value: function _onHorizontalBarTouchStart(e) {
                 var touches = e.originalEvent.targetTouches;
 
-                if (1 == touches.length) {
+                if (touches.length) {
                     e.preventDefault();
 
                     this._horizontalBarTouchId = touches[0].identifier;
@@ -521,7 +509,7 @@ var Scrollbox = function ($) {
             value: function _onVerticalBarTouchStart(e) {
                 var touches = e.originalEvent.targetTouches;
 
-                if (1 == touches.length) {
+                if (touches.length) {
                     e.preventDefault();
 
                     this._verticalBarTouchId = touches[0].identifier;
@@ -849,6 +837,7 @@ var Scrollbox = function ($) {
     if (!$.easing.momentum) {
         // easeOutExpo
         $.easing.momentum = function (x, t, b, c, d) {
+            /* eslint eqeqeq: "off" */
             return t == d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
         };
     }
