@@ -1,4 +1,69 @@
 [
+    # OS X 10.11
+    {
+        browserName: 'safari',
+        platform: 'OS X 10.11'
+    },
+    {
+        browserName: 'chrome',
+        platform: 'OS X 10.11'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'OS X 10.11'
+    },
+
+    # OS X 10.10
+    {
+        browserName: 'safari',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: 'chrome',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'OS X 10.10'
+    },
+    {
+        browserName: "iphone",
+        version: "9.2",
+        platform: "OS X 10.10"
+    },
+
+    # Linux
+    {
+        browserName: 'chrome',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'chrome',
+        version: '26',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'firefox',
+        version: '6',
+        platform: 'Linux'
+    },
+    {
+        browserName: 'opera',
+        version: '12',
+        platform: 'Linux'
+    },
+    {
+        browserName: "android",
+        version: "latest",
+        deviceType: "phone",
+        deviceName: "Android Emulator",
+        platform: "Linux"
+    },
+
     # Windows 10
     {
         browserName: 'chrome',
@@ -121,70 +186,5 @@
         browserName: 'opera',
         version: '11',
         platform: 'Windows XP'
-    },
-
-    # OS X 10.11
-    {
-        browserName: 'safari',
-        platform: 'OS X 10.11'
-    },
-    {
-        browserName: 'chrome',
-        platform: 'OS X 10.11'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'OS X 10.11'
-    },
-
-    # OS X 10.10
-    {
-        browserName: 'safari',
-        platform: 'OS X 10.10'
-    },
-    {
-        browserName: 'chrome',
-        platform: 'OS X 10.10'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'OS X 10.10'
-    },
-    {
-        browserName: "iphone",
-        version: "9.2",
-        platform: "OS X 10.10"
-    },
-
-    # Linux
-    {
-        browserName: 'chrome',
-        platform: 'Linux'
-    },
-    {
-        browserName: 'chrome',
-        version: '26',
-        platform: 'Linux'
-    },
-    {
-        browserName: 'firefox',
-        platform: 'Linux'
-    },
-    {
-        browserName: 'firefox',
-        version: '6',
-        platform: 'Linux'
-    },
-    {
-        browserName: 'opera',
-        version: '12',
-        platform: 'Linux'
-    },
-    {
-        browserName: "android",
-        version: "latest",
-        deviceType: "phone",
-        deviceName: "Android Emulator",
-        platform: "Linux"
     }
 ]
