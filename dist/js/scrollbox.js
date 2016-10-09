@@ -837,7 +837,7 @@ var Scrollbox = function ($) {
     if (!$.easing.momentum) {
         // easeOutExpo
         $.easing.momentum = function (x, t, b, c, d) {
-            /* eslint eqeqeq: "off" */
+            /* eslint eqeqeq: 0 */
             return t == d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
         };
     }

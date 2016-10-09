@@ -823,7 +823,7 @@ const Scrollbox = (($) => {
     if (!$.easing.momentum) {
         // easeOutExpo
         $.easing.momentum = (x, t, b, c, d) => {
-            /* eslint eqeqeq: "off" */
+            /* eslint eqeqeq: 0 */
             return t == d ? b + c : c * (- Math.pow(2, -10 * t / d) + 1) + b;
         };
     }
