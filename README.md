@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/Invis1ble/scrollbox/badges/gpa.svg)](https://codeclimate.com/github/Invis1ble/scrollbox)
 ![Bower version](https://img.shields.io/bower/v/scrollbox.svg)
 [![npm version](https://img.shields.io/npm/v/scrollbox.svg)](https://www.npmjs.com/package/scrollbox)
-[![Packagist Prerelease](https://img.shields.io/packagist/vpre/Invis1ble/scrollbox.svg)](https://packagist.org/packages/Invis1ble/scrollbox)
+[![Packagist Prerelease](https://img.shields.io/packagist/v/Invis1ble/scrollbox.svg)](https://packagist.org/packages/Invis1ble/scrollbox)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.
