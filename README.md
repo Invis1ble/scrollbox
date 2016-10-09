@@ -1,5 +1,7 @@
 # Scrollbox Demo Page
 
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 ## License
 
-[MIT](http://www.opensource.org/licenses/mit-license.php)
+[The MIT License](./LICENSE)
