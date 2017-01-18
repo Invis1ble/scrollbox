@@ -303,7 +303,7 @@
         QUnit.test('should expose defaults var for settings', (assert) => {
             assert.expect(1);
 
-            assert.ok($.fn._scrollbox.Constructor.Default, 'default object exposed');
+            assert.ok($.fn._scrollbox.Constructor.getDefault(), 'default object exposed');
         });
 
         QUnit.test('should show rail and bar if content size is greater than the container one', (assert) => {

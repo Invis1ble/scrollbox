@@ -105,11 +105,11 @@ const Scrollbox = (($) => {
             this._init();
         }
 
-        static get VERSION() {
+        static getVersion() {
             return VERSION;
         }
 
-        static get Default() {
+        static getDefault() {
             return Default;
         }
 
@@ -795,7 +795,7 @@ const Scrollbox = (($) => {
                 if (!scrollbox) {
                     scrollbox = new Scrollbox(
                         this,
-                        $.extend(true, {}, Scrollbox.Default, $this.data(), 'object' === typeof config && config)
+                        $.extend(true, {}, Scrollbox.getDefault(), $this.data(), 'object' === typeof config && config)
                     );
 
                     $this.data(DATA_KEY, scrollbox);

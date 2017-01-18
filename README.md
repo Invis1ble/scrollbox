@@ -124,7 +124,7 @@ $('#long-content-container').scrollbox({
 or re-define default values for all instances:
 
 ```js
-$.fn.scrollbox.Constructor.Default.distanceToReach.y = 100;
+$.fn.scrollbox.Constructor.getDefault().distanceToReach.y = 100;
 ```
 
 #### startAt.x
