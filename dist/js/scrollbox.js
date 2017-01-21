@@ -4,7 +4,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /*!
  * Scrollbox v3.0.1
- * (c) 2013-2016, Max Invis1ble
+ * (c) 2013-2017, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
 
