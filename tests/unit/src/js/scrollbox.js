@@ -113,13 +113,13 @@
             const ACTUAL_SCROLL_TOP = $scrollbox.scrollTop();
             const LEGAL_DELTA = 1;
 
-            this.push(
-                Math.abs(ACTUAL_SCROLL_LEFT - expectedScrollLeft) <= LEGAL_DELTA &&
-                Math.abs(ACTUAL_SCROLL_TOP - expectedScrollTop) <= LEGAL_DELTA,
-                `left: ${ACTUAL_SCROLL_LEFT}, top: ${ACTUAL_SCROLL_TOP}`,
-                `left: ${expectedScrollLeft}, top: ${expectedScrollTop}`,
-                undefined !== message ? message : 'scroll position is proper'
-            );
+            this.pushResult({
+                result: Math.abs(ACTUAL_SCROLL_LEFT - expectedScrollLeft) <= LEGAL_DELTA &&
+                        Math.abs(ACTUAL_SCROLL_TOP - expectedScrollTop) <= LEGAL_DELTA,
+                actual: `left: ${ACTUAL_SCROLL_LEFT}, top: ${ACTUAL_SCROLL_TOP}`,
+                expected: `left: ${expectedScrollLeft}, top: ${expectedScrollTop}`,
+                message: undefined !== message ? message : 'scroll position is proper'
+            });
         },
 
         horizontalScrollPositionIs: function (scrollbox, expectedScrollLeft, message) {
@@ -128,12 +128,12 @@
             const ACTUAL_SCROLL_LEFT = $scrollbox.scrollLeft();
             const LEGAL_DELTA = 1;
 
-            this.push(
-                Math.abs(ACTUAL_SCROLL_LEFT - expectedScrollLeft) <= LEGAL_DELTA,
-                ACTUAL_SCROLL_LEFT,
-                expectedScrollLeft,
-                undefined !== message ? message : 'horizontal scroll position is proper'
-            );
+            this.pushResult({
+                result: Math.abs(ACTUAL_SCROLL_LEFT - expectedScrollLeft) <= LEGAL_DELTA,
+                actual: ACTUAL_SCROLL_LEFT,
+                expected: expectedScrollLeft,
+                message: undefined !== message ? message : 'horizontal scroll position is proper'
+            });
         },
 
         verticalScrollPositionIs: function (scrollbox, expectedScrollTop, message) {
@@ -142,12 +142,12 @@
             const ACTUAL_SCROLL_TOP = $scrollbox.scrollTop();
             const LEGAL_DELTA = 1;
 
-            this.push(
-                Math.abs(ACTUAL_SCROLL_TOP - expectedScrollTop) <= LEGAL_DELTA,
-                ACTUAL_SCROLL_TOP,
-                expectedScrollTop,
-                undefined !== message ? message : 'vertical scroll position is proper'
-            );
+            this.pushResult({
+                result: Math.abs(ACTUAL_SCROLL_TOP - expectedScrollTop) <= LEGAL_DELTA,
+                actual: ACTUAL_SCROLL_TOP,
+                expected: expectedScrollTop,
+                message: undefined !== message ? message : 'vertical scroll position is proper'
+            });
         },
 
         barsHaveProperSizes: function (scrollbox, message) {
@@ -172,15 +172,15 @@
 
             const LEGAL_DELTA = 1;
 
-            this.push(
-                Math.abs(HORIZONTAL_BAR_ACTUAL_WIDTH - HORIZONTAL_BAR_EXPECTED_WIDTH) <= LEGAL_DELTA &&
-                Math.abs(VERTICAL_BAR_ACTUAL_HEIGHT - VERTICAL_BAR_EXPECTED_HEIGHT) <= LEGAL_DELTA,
-                `horizontal bar width: ${HORIZONTAL_BAR_ACTUAL_WIDTH}, ` +
-                `vertical bar height: ${VERTICAL_BAR_ACTUAL_HEIGHT}`,
-                `horizontal bar width: ${HORIZONTAL_BAR_EXPECTED_WIDTH}, ` +
-                `vertical bar height: ${VERTICAL_BAR_EXPECTED_HEIGHT}`,
-                undefined !== message ? message : 'bars have a proper sizes'
-            );
+            this.pushResult({
+                result: Math.abs(HORIZONTAL_BAR_ACTUAL_WIDTH - HORIZONTAL_BAR_EXPECTED_WIDTH) <= LEGAL_DELTA &&
+                        Math.abs(VERTICAL_BAR_ACTUAL_HEIGHT - VERTICAL_BAR_EXPECTED_HEIGHT) <= LEGAL_DELTA,
+                actual: `horizontal bar width: ${HORIZONTAL_BAR_ACTUAL_WIDTH}, ` +
+                        `vertical bar height: ${VERTICAL_BAR_ACTUAL_HEIGHT}`,
+                expected: `horizontal bar width: ${HORIZONTAL_BAR_EXPECTED_WIDTH}, ` +
+                          `vertical bar height: ${VERTICAL_BAR_EXPECTED_HEIGHT}`,
+                message: undefined !== message ? message : 'bars have a proper sizes'
+            });
         },
 
         barsHaveProperPosition: function (scrollbox, message) {
@@ -195,15 +195,15 @@
 
             const LEGAL_DELTA = 1;
 
-            this.push(
-                Math.abs(HORIZONTAL_BAR_ACTUAL_POSITION_LEFT - HORIZONTAL_BAR_EXPECTED_POSITION_LEFT) <= LEGAL_DELTA &&
-                Math.abs(VERTICAL_BAR_ACTUAL_POSITION_TOP - VERTICAL_BAR_EXPECTED_POSITION_TOP) <= LEGAL_DELTA,
-                `horizontal bar position left: ${HORIZONTAL_BAR_ACTUAL_POSITION_LEFT}, ` +
-                `vertical bar position top: ${VERTICAL_BAR_ACTUAL_POSITION_TOP}`,
-                `horizontal bar position left: ${HORIZONTAL_BAR_EXPECTED_POSITION_LEFT}, ` +
-                `vertical bar position top: ${VERTICAL_BAR_EXPECTED_POSITION_TOP}`,
-                undefined !== message ? message : 'bars have a proper positions'
-            );
+            this.pushResult({
+                result: Math.abs(HORIZONTAL_BAR_ACTUAL_POSITION_LEFT - HORIZONTAL_BAR_EXPECTED_POSITION_LEFT) <= LEGAL_DELTA &&
+                        Math.abs(VERTICAL_BAR_ACTUAL_POSITION_TOP - VERTICAL_BAR_EXPECTED_POSITION_TOP) <= LEGAL_DELTA,
+                actual: `horizontal bar position left: ${HORIZONTAL_BAR_ACTUAL_POSITION_LEFT}, ` +
+                        `vertical bar position top: ${VERTICAL_BAR_ACTUAL_POSITION_TOP}`,
+                expected: `horizontal bar position left: ${HORIZONTAL_BAR_EXPECTED_POSITION_LEFT}, ` +
+                          `vertical bar position top: ${VERTICAL_BAR_EXPECTED_POSITION_TOP}`,
+                message: undefined !== message ? message : 'bars have a proper positions'
+            });
         },
         
         barsAreVisible: function (scrollbox, expected, message) {
@@ -212,44 +212,44 @@
             const VERTICAL_RAIL_ACTUAL_STATE = getVerticalRail(scrollbox).is(':visible');
             const VERTICAL_BAR_ACTUAL_STATE = getVerticalBar(scrollbox).is(':visible');
             
-            this.push(
-                HORIZONTAL_RAIL_ACTUAL_STATE === expected &&
-                HORIZONTAL_BAR_ACTUAL_STATE === expected &&
-                VERTICAL_RAIL_ACTUAL_STATE === expected &&
-                VERTICAL_BAR_ACTUAL_STATE === expected,
-                `horizontal rail visible: ${HORIZONTAL_RAIL_ACTUAL_STATE}, ` +
-                `horizontal bar visible: ${HORIZONTAL_BAR_ACTUAL_STATE}, ` +
-                `vertical rail visible: ${VERTICAL_RAIL_ACTUAL_STATE}, ` +
-                `vertical bar visible: ${VERTICAL_BAR_ACTUAL_STATE}`,
-                `horizontal rail visible: ${expected}, ` +
-                `horizontal bar visible: ${expected}, ` +
-                `vertical rail visible: ${expected}, ` +
-                `vertical bar visible: ${expected}`,
-                undefined !== message ? message : `bars are ${expected ? 'visible' : 'hidden'}`
-            );
+            this.pushResult({
+                result: HORIZONTAL_RAIL_ACTUAL_STATE === expected &&
+                        HORIZONTAL_BAR_ACTUAL_STATE === expected &&
+                        VERTICAL_RAIL_ACTUAL_STATE === expected &&
+                        VERTICAL_BAR_ACTUAL_STATE === expected,
+                actual: `horizontal rail visible: ${HORIZONTAL_RAIL_ACTUAL_STATE}, ` +
+                        `horizontal bar visible: ${HORIZONTAL_BAR_ACTUAL_STATE}, ` +
+                        `vertical rail visible: ${VERTICAL_RAIL_ACTUAL_STATE}, ` +
+                        `vertical bar visible: ${VERTICAL_BAR_ACTUAL_STATE}`,
+                expected: `horizontal rail visible: ${expected}, ` +
+                          `horizontal bar visible: ${expected}, ` +
+                          `vertical rail visible: ${expected}, ` +
+                          `vertical bar visible: ${expected}`,
+                message: undefined !== message ? message : `bars are ${expected ? 'visible' : 'hidden'}`
+            });
         },
 
         barStateIs: function (bar, isCaptured, message) {
             const ACTUAL_STATE = $(bar).hasClass('scrollbox-bar-captured');
 
-            this.push(
-                ACTUAL_STATE === isCaptured,
-                ACTUAL_STATE,
-                isCaptured,
-                undefined !== message ? message : `bar is ${isCaptured ? 'captured' : 'released'}`
-            );
+            this.pushResult({
+                result: ACTUAL_STATE === isCaptured,
+                actual: ACTUAL_STATE,
+                expected: isCaptured,
+                message: undefined !== message ? message : `bar is ${isCaptured ? 'captured' : 'released'}`
+            });
         },
 
         elementHasEvent: function (element, event, hasEvent, message) {
             const events = $._data(element, 'events');
             const HAS_EVENT = undefined !== events && undefined !== events[event];
 
-            this.push(
-                HAS_EVENT === hasEvent,
-                HAS_EVENT,
-                hasEvent,
-                undefined !== message ? message : `element has ${hasEvent ? '' : 'not'} event "${event}"`
-            );
+            this.pushResult({
+                result: HAS_EVENT === hasEvent,
+                actual: HAS_EVENT,
+                expected: hasEvent,
+                message: undefined !== message ? message : `element has ${hasEvent ? '' : 'not'} event "${event}"`
+            });
         }
     });
 
@@ -303,7 +303,7 @@
         QUnit.test('should expose defaults var for settings', (assert) => {
             assert.expect(1);
 
-            assert.ok($.fn._scrollbox.Constructor.Default, 'default object exposed');
+            assert.ok($.fn._scrollbox.Constructor.getDefault(), 'default object exposed');
         });
 
         QUnit.test('should show rail and bar if content size is greater than the container one', (assert) => {

@@ -22,7 +22,7 @@ module.exports = (grunt) => {
         babel: {
             options: {
                 presets: [
-                    ['es2015', { modules: false }]
+                    ['es2015', { modules: false, loose: true }]
                 ]
             },
             production: {

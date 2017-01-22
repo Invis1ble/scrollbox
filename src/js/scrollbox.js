@@ -1,13 +1,13 @@
 /*!
- * Scrollbox v3.0.1
- * (c) 2013-2016, Max Invis1ble
+ * Scrollbox v4.0.0
+ * (c) 2013-2017, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
 
 const Scrollbox = (($) => {
 
     const NAME               = 'scrollbox';
-    const VERSION            = '3.0.1';
+    const VERSION            = '4.0.0';
     const DATA_KEY           = NAME;
     const JQUERY_NO_CONFLICT = $.fn[NAME];
 
@@ -105,11 +105,11 @@ const Scrollbox = (($) => {
             this._init();
         }
 
-        static get VERSION() {
+        static getVersion() {
             return VERSION;
         }
 
-        static get Default() {
+        static getDefault() {
             return Default;
         }
 
@@ -795,7 +795,7 @@ const Scrollbox = (($) => {
                 if (!scrollbox) {
                     scrollbox = new Scrollbox(
                         this,
-                        $.extend(true, {}, Scrollbox.Default, $this.data(), 'object' === typeof config && config)
+                        $.extend(true, {}, Scrollbox.getDefault(), $this.data(), 'object' === typeof config && config)
                     );
 
                     $this.data(DATA_KEY, scrollbox);
@@ -806,7 +806,7 @@ const Scrollbox = (($) => {
                         throw new Error(`No method named "${config}"`);
                     }
 
-                    scrollbox[config].apply(scrollbox, args);
+                    scrollbox[config](...args);
                 }
             });
         }

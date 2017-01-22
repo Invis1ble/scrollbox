@@ -1,7 +1,7 @@
 {
   "name": "scrollbox",
   "description": "A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "author": "Max Invis1ble",
   "keywords": [
     "jquery-plugin",
@@ -18,7 +18,8 @@
     "inertia"
   ],
   "scripts": {
-    "test": "grunt babel:unitTests && grunt less:unitTests && grunt modernizr && grunt qunit"
+    "test": "grunt babel:unitTests && grunt less:unitTests && grunt modernizr && grunt qunit",
+    "prepublish": "grunt production"
   },
   "main": "dist/js/scrollbox",
   "dependencies": {

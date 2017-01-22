@@ -11,6 +11,18 @@ A lightweight jQuery custom scrollbar plugin, that triggers event when reached t
 
 [Demo Page](https://invis1ble.github.io/scrollbox/)
 
+## Table of contents
+
+- [Browser compatibility](#browser-compatibility)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Basic features](#basic-features)
+    - [Options](#options)
+    - [Methods](#methods)
+    - [Events](#events)
+- [Infinite scrolling implementation example](#infinite-scrolling-implementation-example)
+- [License](#license)
+
 ## Browser compatibility
 
 * IE 7+
@@ -124,7 +136,7 @@ $('#long-content-container').scrollbox({
 or re-define default values for all instances:
 
 ```js
-$.fn.scrollbox.Constructor.Default.distanceToReach.y = 100;
+$.fn.scrollbox.Constructor.getDefault().distanceToReach.y = 100;
 ```
 
 #### startAt.x
