@@ -18,7 +18,8 @@
     "inertia"
   ],
   "scripts": {
-    "test": "grunt babel:unitTests && grunt less:unitTests && grunt modernizr && grunt qunit"
+    "test": "grunt babel:unitTests && grunt less:unitTests && grunt modernizr && grunt qunit",
+    "prepublish": "grunt production"
   },
   "main": "dist/js/scrollbox",
   "dependencies": {
