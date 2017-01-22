@@ -1,7 +1,7 @@
 {
   "name": "scrollbox",
   "description": "A lightweight jQuery custom scrollbar plugin, that triggers event when reached the defined point.",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "author": "Max Invis1ble",
   "keywords": [
     "jquery-plugin",

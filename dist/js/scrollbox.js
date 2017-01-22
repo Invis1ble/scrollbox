@@ -3,7 +3,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /*!
- * Scrollbox v3.0.1
+ * Scrollbox v4.0.0
  * (c) 2013-2017, Max Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
@@ -11,7 +11,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Scrollbox = function ($) {
 
     var NAME = 'scrollbox';
-    var VERSION = '3.0.1';
+    var VERSION = '4.0.0';
     var DATA_KEY = NAME;
     var JQUERY_NO_CONFLICT = $.fn[NAME];
 
