@@ -806,7 +806,7 @@ const Scrollbox = (($) => {
                         throw new Error(`No method named "${config}"`);
                     }
 
-                    scrollbox[config].apply(scrollbox, args);
+                    scrollbox[config](...args);
                 }
             });
         }

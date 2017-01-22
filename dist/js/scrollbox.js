@@ -764,11 +764,13 @@ var Scrollbox = function ($) {
                 }
 
                 if ('string' === typeof config) {
+                    var _scrollbox;
+
                     if ('function' !== typeof scrollbox[config]) {
                         throw new Error('No method named "' + config + '"');
                     }
 
-                    scrollbox[config].apply(scrollbox, args);
+                    (_scrollbox = scrollbox)[config].apply(_scrollbox, args);
                 }
             });
         };
