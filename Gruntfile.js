@@ -196,7 +196,7 @@ module.exports = (grunt) => {
                 options: {
                     build: testBuildNumber,
                     throttled: 5,
-                    urls: ['http://localhost:9999/tests/unit/index.html'],
+                    urls: ['http://127.0.0.1/tests/unit/index.html'],
                     testname: 'QUnit test for Scrollbox',
                     browsers: grunt.file.readYAML('tests/sauce_browsers.yml')
                 }
@@ -244,7 +244,7 @@ module.exports = (grunt) => {
     // See https://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests
     if ('false' === process.env.TRAVIS_PULL_REQUEST) {
         ciTasks.push(
-            'connect',
+            //'connect',
             'saucelabs-qunit'
         );
     }
