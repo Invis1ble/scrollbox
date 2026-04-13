@@ -1,7 +1,7 @@
 # Scrollbox
 
-[![Build Status](https://travis-ci.org/Invis1ble/scrollbox.svg?branch=master)](https://travis-ci.org/Invis1ble/scrollbox)
-[![Code Climate](https://codeclimate.com/github/Invis1ble/scrollbox/badges/gpa.svg)](https://codeclimate.com/github/Invis1ble/scrollbox)
+[![CI](https://github.com/Invis1ble/scrollbox/actions/workflows/test.yml/badge.svg)](https://github.com/Invis1ble/scrollbox/actions/workflows/test.yml)
+[![Maintainability](https://qlty.sh/gh/Invis1ble/projects/scrollbox/maintainability.svg)](https://qlty.sh/gh/Invis1ble/projects/scrollbox)
 ![Bower version](https://img.shields.io/bower/v/scrollbox.svg)
 [![npm version](https://img.shields.io/npm/v/scrollbox.svg)](https://www.npmjs.com/package/scrollbox)
 [![Packagist Prerelease](https://img.shields.io/packagist/v/Invis1ble/scrollbox.svg)](https://packagist.org/packages/Invis1ble/scrollbox)
@@ -33,10 +33,6 @@ A lightweight jQuery custom scrollbar plugin, that triggers event when reached t
 * Chrome for Android
 
 ... and others.
-
-Scrollbox is automatically tested on the following browsers
-
-[![Sauce Test Status](https://app.saucelabs.com/browser-matrix/Invis1ble.svg)](https://app.saucelabs.com/u/Invis1ble)
 
 ## Installation
 
