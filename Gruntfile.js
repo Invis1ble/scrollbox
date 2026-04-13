@@ -3,14 +3,6 @@ module.exports = (grunt) => {
 
     require('load-grunt-tasks')(grunt);
 
-    let testBuildNumber;
-    
-    if (process.env.TRAVIS_JOB_ID) {
-        testBuildNumber = "travis-" + process.env.TRAVIS_JOB_ID;
-    } else {
-        testBuildNumber = "manual-" + (new Date()).getTime();
-    }
-    
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         clean: [
@@ -190,17 +182,6 @@ module.exports = (grunt) => {
                     port: 9999
                 }
             }
-        },
-        'saucelabs-qunit': {
-            all: {
-                options: {
-                    build: testBuildNumber,
-                    throttled: 5,
-                    urls: ['http://localhost:9999/tests/unit/index.html'],
-                    testname: 'QUnit test for Scrollbox',
-                    browsers: grunt.file.readYAML('tests/sauce_browsers.yml')
-                }
-            }
         }
     });
 
@@ -238,16 +219,4 @@ module.exports = (grunt) => {
         'cssmin',
         'tests'
     ]);
-
-    let ciTasks = ['production'];
-
-    // See https://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests
-    if ('false' === process.env.TRAVIS_PULL_REQUEST) {
-        ciTasks.push(
-            'connect',
-            'saucelabs-qunit'
-        );
-    }
-
-    grunt.registerTask('ci', ciTasks);
 };

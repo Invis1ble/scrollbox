@@ -1,13 +1,13 @@
 /*!
- * Scrollbox v4.0.0
- * (c) 2013-2017, Max Invis1ble
+ * Scrollbox v4.0.1
+ * (c) 2013-2026, Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
 
 const Scrollbox = (($) => {
 
     const NAME               = 'scrollbox';
-    const VERSION            = '4.0.0';
+    const VERSION            = '4.0.1';
     const DATA_KEY           = NAME;
     const JQUERY_NO_CONFLICT = $.fn[NAME];
 

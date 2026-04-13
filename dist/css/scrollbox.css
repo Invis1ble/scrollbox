@@ -1,6 +1,6 @@
 /*!
- * Scrollbox v4.0.0
- * (c) 2013-2017, Max Invis1ble
+ * Scrollbox v4.0.1
+ * (c) 2013-2026, Invis1ble
  * Licensed under MIT (https://opensource.org/licenses/mit-license.php)
  */
 .scrollbox-wrapper {
@@ -11,7 +11,6 @@
 }
 .scrollbox-wrapper > :first-child {
   -webkit-backface-visibility: hidden;
-     -moz-backface-visibility: hidden;
           backface-visibility: hidden;
   will-change: scroll-position;
 }
@@ -37,20 +36,17 @@
 }
 .scrollbox-horizontal-bar {
   -webkit-backface-visibility: hidden;
-     -moz-backface-visibility: hidden;
           backface-visibility: hidden;
   will-change: left;
 }
 .scrollbox-vertical-bar {
   -webkit-backface-visibility: hidden;
-     -moz-backface-visibility: hidden;
           backface-visibility: hidden;
   will-change: top;
 }
 .scrollbox-rail {
   background-color: #000;
   -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
           border-radius: 3px;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=3)";
   filter: alpha(opacity=3);
@@ -61,7 +57,6 @@
 .scrollbox-bar {
   background-color: #ccc;
   -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
           border-radius: 3px;
 }
 .scrollbox-bar:hover {
